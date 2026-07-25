@@ -50,16 +50,47 @@ scripts/           repo-check and ops tooling
 
 ## Running it locally
 
+Needs **Docker Desktop running** — the Supabase stack (Postgres, Auth, PostgREST,
+Studio) is containerised. The Next.js app itself runs on Node directly.
+
 ```bash
-supabase start
-pnpm db:reset            # migrations + market types + rule set v1
-pnpm db:seed:dev         # a fake season to predict against
-pnpm dev
+pnpm install
+pnpm dev:setup     # starts Supabase, applies migrations, seeds a season, writes .env.local
+pnpm dev           # http://localhost:3000
 ```
 
-Then sign up, create a league, and predict. `pnpm drill` exercises the whole spine
-end to end against the same database and exits non-zero on the first failure, so it
-can gate a deploy.
+`dev:setup` is idempotent — re-run it any time to reset to a clean seeded database.
+
+Sign up with any email; local auth neither sends nor verifies anything. The seeded
+season has 20 invented clubs across 3 matchweeks, so you can create a league and
+predict immediately.
+
+To see the settled, live and recap states with real data in them:
+
+```bash
+pnpm drill         # plays a fixture through to full time, then corrects it
+```
+
+Other things worth knowing:
+
+| | |
+|---|---|
+| `supabase studio` | Browse the database at http://127.0.0.1:54323 |
+| `pnpm ui:smoke` | Drives a browser through every page; writes `.screenshots/` |
+| `pnpm db:test` | 86 pgTAP tests — locks, RLS, immutability, selection |
+| `pnpm check` | The full gate. Must be green before any commit. |
+
+### Seeing each UI state
+
+The seed leaves everything unpredicted and unplayed, which only shows the
+*editable* state. To reach the others:
+
+- **locked / live / settled** — `pnpm drill` moves a fixture through all three
+- **light theme** — the toggle in the sidebar (desktop) or header (mobile)
+- **mobile layout** — narrow the window below 1024px, or use device emulation
+- **⌘K** — anywhere in the app
+- **/ops** — needs a platform admin:
+  `update profiles set is_platform_admin = true where username = 'you';`
 
 ## Rules worth knowing before you edit anything
 
