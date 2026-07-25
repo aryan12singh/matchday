@@ -34,7 +34,15 @@ export type Database = {
           occurred_at?: string
           target?: Json | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       competitions: {
         Row: {
@@ -390,6 +398,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "league_events_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "league_events_league_id_fkey"
             columns: ["league_id"]
             isOneToOne: false
@@ -478,6 +493,13 @@ export type Database = {
             referencedRelation: "leagues"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "league_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       league_round_selections: {
@@ -558,6 +580,13 @@ export type Database = {
           rule_set_version_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "league_rule_bindings_bound_by_fkey"
+            columns: ["bound_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "league_rule_bindings_league_season_id_fkey"
             columns: ["league_season_id"]
@@ -666,7 +695,15 @@ export type Database = {
           updated_at?: string
           visibility?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "leagues_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       market_types: {
         Row: {
@@ -806,7 +843,15 @@ export type Database = {
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notification_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_prefs: {
         Row: {
@@ -836,7 +881,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notification_prefs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       player_equivalences: {
         Row: {
@@ -972,6 +1025,13 @@ export type Database = {
             referencedRelation: "markets"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       prize_schemes: {
@@ -1073,6 +1133,13 @@ export type Database = {
             columns: ["score_run_id"]
             isOneToOne: false
             referencedRelation: "score_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prize_settlements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1203,7 +1270,15 @@ export type Database = {
           user_agent?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rank_snapshots: {
         Row: {
@@ -1246,6 +1321,13 @@ export type Database = {
             columns: ["round_id"]
             isOneToOne: false
             referencedRelation: "rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rank_snapshots_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1326,6 +1408,20 @@ export type Database = {
             columns: ["league_id"]
             isOneToOne: false
             referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rivals_rival_user_id_fkey"
+            columns: ["rival_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rivals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1502,6 +1598,13 @@ export type Database = {
             referencedRelation: "score_runs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "score_components_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       score_run_changes: {
@@ -1582,7 +1685,15 @@ export type Database = {
           status?: string
           trigger?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "score_runs_initiated_by_fkey"
+            columns: ["initiated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       season_player_stats: {
         Row: {
@@ -2072,6 +2183,23 @@ export type Database = {
         Args: { p_market_id: string; p_owner_id: string }
         Returns: boolean
       }
+      create_league: {
+        Args: { p_name: string }
+        Returns: {
+          join_code: string
+          league_id: string
+        }[]
+      }
+      enrol_league_season: {
+        Args: {
+          p_league_id: string
+          p_reveal_policy?: string
+          p_season_id: string
+          p_selection_mode?: string
+        }
+        Returns: string
+      }
+      generate_join_code: { Args: { p_length?: number }; Returns: string }
       is_league_member: { Args: { p_league_id: string }; Returns: boolean }
       is_league_organizer: { Args: { p_league_id: string }; Returns: boolean }
       is_league_season_member: {
@@ -2091,6 +2219,7 @@ export type Database = {
           fixture_id: string
         }[]
       }
+      leave_league: { Args: { p_league_id: string }; Returns: undefined }
       lock_markets_sweep: { Args: never; Returns: number }
       preview_league: {
         Args: { p_code: string }
@@ -2099,6 +2228,16 @@ export type Database = {
           member_count: number
           name: string
         }[]
+      }
+      regenerate_join_code: { Args: { p_league_id: string }; Returns: string }
+      update_league_season_settings: {
+        Args: {
+          p_fixtures_per_round?: number
+          p_league_season_id: string
+          p_reveal_policy?: string
+          p_selection_mode?: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
