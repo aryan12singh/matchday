@@ -37,3 +37,25 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+
+  database:
+    # The lock trigger, the immutability guards and the RLS reveal rules are the controls
+    # the whole product rests on. They run against a real Postgres on every change, not
+    # only when someone remembers to run them locally.
+    name: database (pgTAP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local stack
+        run: supabase start
+
+      - name: Migrations apply clean and seed loads
+        run: supabase db reset
+
+      - name: Locks, immutability and RLS tests
+        run: supabase test db

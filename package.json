@@ -15,6 +15,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "repo:check": "tsx scripts/repo-check.ts",
+    "db:start": "supabase start",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
     "check": "pnpm repo:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "devDependencies": {
