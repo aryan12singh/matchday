@@ -1,17 +1,18 @@
 /**
  * @matchday/scoring — pure settlers, aggregation and tiebreaks.
  *
- * Ported from ../wc26-predictor/lib/scoring.ts in Task 5.
+ * Ported from ../wc26-predictor/lib/scoring.ts and lib/leaderboard.ts. Semantics are
+ * preserved; the shape changed from points to all-or-nothing hits so that a league's
+ * weights apply at aggregation rather than at settlement (invariant 4).
  *
- * Boundary (lint- and repo-check-enforced): this package may import ONLY
- * @matchday/domain. Zero IO — no fs, no net, no database, no clock reads passed
- * implicitly. Every settler is a pure function of its arguments so the golden
- * vectors stay reproducible and score runs stay re-runnable.
+ * This package may import ONLY @matchday/domain, and performs zero IO — enforced by
+ * eslint.config.mjs and, with an allowlist, by scripts/repo-check.ts. Every function here
+ * is a pure function of its arguments so score runs are re-runnable and idempotent
+ * (invariant 5) and the golden vectors stay meaningful.
  */
 
-import { DOMAIN_PACKAGE } from '@matchday/domain';
-
-/** Proves the domain boundary resolves; replaced by real settlers in Task 5. */
-export const SCORING_DEPENDS_ON = DOMAIN_PACKAGE;
+export * from './settlers';
+export * from './season-table';
+export * from './leaderboard';
 
 export const SCORING_PACKAGE = '@matchday/scoring' as const;
