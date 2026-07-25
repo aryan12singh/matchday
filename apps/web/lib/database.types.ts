@@ -2199,6 +2199,11 @@ export type Database = {
         }
         Returns: string
       }
+      ensure_fixture_markets: {
+        Args: { p_fixture_id: string }
+        Returns: number
+      }
+      ensure_season_markets: { Args: { p_season_id: string }; Returns: number }
       generate_join_code: { Args: { p_length?: number }; Returns: string }
       is_league_member: { Args: { p_league_id: string }; Returns: boolean }
       is_league_organizer: { Args: { p_league_id: string }; Returns: boolean }
@@ -2230,6 +2235,32 @@ export type Database = {
         }[]
       }
       regenerate_join_code: { Args: { p_league_id: string }; Returns: string }
+      save_fixture_prediction: {
+        Args: {
+          p_away: number
+          p_btts?: boolean
+          p_first_scorer_id?: string
+          p_first_scorer_none?: boolean
+          p_first_team_id?: string
+          p_first_team_none?: boolean
+          p_fixture_id: string
+          p_goal_diff?: number
+          p_home: number
+          p_total_goals?: number
+        }
+        Returns: {
+          market_code: string
+          saved: boolean
+        }[]
+      }
+      save_golden_boot_prediction: {
+        Args: { p_player_id: string; p_season_id: string }
+        Returns: string
+      }
+      save_season_table_prediction: {
+        Args: { p_order: string[]; p_season_id: string }
+        Returns: string
+      }
       update_league_season_settings: {
         Args: {
           p_fixtures_per_round?: number
