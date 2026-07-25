@@ -14,9 +14,12 @@
     "@matchday/notify": "workspace:*",
     "@matchday/provider": "workspace:*",
     "@matchday/scoring": "workspace:*",
+    "@supabase/ssr": "^0.12.3",
+    "@supabase/supabase-js": "^2.110.8",
     "next": "^15.5.9",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
