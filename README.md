@@ -24,6 +24,11 @@ pnpm dev                     # http://localhost:3000
 | `pnpm test` | Vitest |
 | `pnpm repo:check` | Structural invariants — migrations, secrets, boundaries, design tokens |
 | `pnpm check` | All of the above, in order. Must be green before any commit. |
+| `pnpm db:start` / `db:reset` | Local Supabase stack; reset applies migrations + seed |
+| `pnpm db:test` | pgTAP: locks, immutability, RLS, leagues, selection, predictions |
+| `pnpm db:types` | Regenerate `packages/domain/src/database.types.ts` after a migration |
+| `pnpm db:seed:dev` | Fake 20-team, 3-matchweek season so the app is usable without the provider |
+| `pnpm drill` | Full matchday drill: predict → lock → settle → leaderboard → correction |
 
 ## Layout
 
@@ -41,6 +46,19 @@ docs/plan/         Live launch calendar
 tests/             Integration tests
 scripts/           repo-check and ops tooling
 ```
+
+## Running it locally
+
+```bash
+supabase start
+pnpm db:reset            # migrations + market types + rule set v1
+pnpm db:seed:dev         # a fake season to predict against
+pnpm dev
+```
+
+Then sign up, create a league, and predict. `pnpm drill` exercises the whole spine
+end to end against the same database and exits non-zero on the first failure, so it
+can gate a deploy.
 
 ## Rules worth knowing before you edit anything
 

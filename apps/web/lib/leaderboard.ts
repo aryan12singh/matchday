@@ -3,17 +3,16 @@ import 'server-only';
 import {
   type RuleSetDefinition,
   DEFAULT_WEIGHTS,
-  SCORE_CATEGORIES,
   resolveWeights,
   ruleSetDefinitionSchema,
 } from '@matchday/domain';
 import {
-  type ComponentRow,
   type LeaderboardMember,
   type LeaderboardRow,
   type TableRaceEntry,
   aggregateLeaderboard,
   rankTableRace,
+  toComponentRows,
   scoreSeasonTable,
 } from '@matchday/scoring';
 
@@ -67,21 +66,8 @@ export async function getLeaderboard({
   const weights =
     parsed?.success === true ? resolveWeights(parsed.data as RuleSetDefinition) : DEFAULT_WEIGHTS;
 
-  // The database returns `category` as text. Narrow rather than cast, and drop anything
-  // that is not a known category: a component written by a future engine version must not
-  // be silently valued at whatever `weights[unknown]` happens to be.
-  const known = new Set<string>(SCORE_CATEGORIES);
-  const typedComponents: ComponentRow[] = (components ?? [])
-    .filter((row) => known.has(row.category))
-    .map((row) => ({
-      userId: row.user_id,
-      marketId: row.market_id,
-      category: row.category as ComponentRow['category'],
-      hit: row.hit,
-    }));
-
   const rows = aggregateLeaderboard({
-    components: typedComponents,
+    components: toComponentRows(components ?? []),
     members: (members ?? []).map(
       (m): LeaderboardMember => ({
         userId: m.user_id,

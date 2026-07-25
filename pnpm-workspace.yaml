@@ -1,4 +1,6 @@
 packages:
+  # The root is a workspace member so scripts/ can link the internal packages.
+  - '.'
   - 'apps/*'
   - 'packages/*'
 

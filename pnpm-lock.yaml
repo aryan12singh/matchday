@@ -11,9 +11,21 @@ importers:
       '@eslint/js':
         specifier: ^9.39.2
         version: 9.39.5
+      '@matchday/domain':
+        specifier: workspace:*
+        version: link:packages/domain
+      '@matchday/jobs':
+        specifier: workspace:*
+        version: link:packages/jobs
+      '@matchday/scoring':
+        specifier: workspace:*
+        version: link:packages/scoring
       '@next/eslint-plugin-next':
         specifier: ^15.5.21
         version: 15.5.21
+      '@supabase/supabase-js':
+        specifier: ^2.110.8
+        version: 2.110.8
       '@types/node':
         specifier: ^22.19.4
         version: 22.20.1

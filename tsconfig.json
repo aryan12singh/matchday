@@ -1,5 +1,9 @@
 {
-  "// note": "Root config exists for editor tooling only. `pnpm typecheck` runs tsc per workspace package.",
-  "files": [],
-  "include": []
+  "//": "Typechecks the root scripts. Without this, scripts/ sits outside every tsconfig and a bad import resolves to undefined at runtime instead of failing the build — which is exactly how the drill shipped with DEFAULT_WEIGHTS imported from the wrong package.",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["scripts/**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
