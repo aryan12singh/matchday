@@ -44,7 +44,9 @@ scripts/           repo-check and ops tooling
 
 ## Rules worth knowing before you edit anything
 
-- `CLAUDE.md` lists the eight non-negotiable invariants. Read them.
+- `docs/discovery/` is the source of truth for architecture. Read `00-START-HERE.md`, then
+  `15-owner-decisions-addendum.md` — it supersedes files 03–14 where they conflict.
+- Work happens on branches only; `main` is merged by the repo owner.
 - Import boundaries are enforced twice: ESLint for editor feedback, `scripts/repo-check.ts`
   as the hard gate. Provider access never reaches the browser.
 - No hardcoded hex in UI — design tokens only. `repo-check` fails the build on it.
