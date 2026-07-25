@@ -2226,6 +2226,7 @@ export type Database = {
         Returns: boolean
       }
       is_platform_admin: { Args: never; Returns: boolean }
+      is_service_context: { Args: never; Returns: boolean }
       join_league: { Args: { p_code: string }; Returns: string }
       league_join_code: { Args: { p_league_id: string }; Returns: string }
       league_round_fixtures: {
@@ -2299,6 +2300,10 @@ export type Database = {
         Args: { p_order: string[]; p_season_id: string }
         Returns: string
       }
+      schedule_matchday_tick: {
+        Args: { p_cron_secret: string; p_site_url: string }
+        Returns: undefined
+      }
       table_race_entries: {
         Args: { p_league_season_id: string }
         Returns: {
@@ -2308,6 +2313,7 @@ export type Database = {
           username: string
         }[]
       }
+      tick_has_work: { Args: never; Returns: boolean }
       toggle_fixture_vote: {
         Args: {
           p_fixture_id: string
