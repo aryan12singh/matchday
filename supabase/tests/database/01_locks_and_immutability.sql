@@ -9,7 +9,7 @@
 
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(24);
+select plan(25);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures for the tests. Written as postgres (auth.uid() is null), which is exactly
@@ -117,15 +117,16 @@ select throws_ok(
   null,
   'the lock trigger rejects a write after locks_at has passed');
 
--- The obvious attack on a per-fixture deadline is to move the deadline. markets has a
--- read policy but no client write policy, so this updates zero rows rather than raising.
-update public.markets set locks_at = now() + interval '30 days'
- where id = 'aaaaaaaa-0000-4000-8000-000000000021';
-
-select ok(
-  (select locks_at from public.markets
-    where id = 'aaaaaaaa-0000-4000-8000-000000000021') < now(),
-  'a client cannot push their own deadline out (markets have no client write policy)');
+-- The obvious attack on a per-fixture deadline is to move the deadline. `authenticated`
+-- holds SELECT on markets and nothing else, so this is refused at the privilege level —
+-- a hard 42501 rather than an RLS-filtered no-op. Stronger, and it fails loudly if anyone
+-- ever grants UPDATE here.
+select throws_ok(
+  $$update public.markets set locks_at = now() + interval '30 days'
+     where id = 'aaaaaaaa-0000-4000-8000-000000000021'$$,
+  '42501',
+  null,
+  'a client cannot push their own deadline out — markets are read-only to clients');
 
 -- Editing an open prediction is allowed and writes a revision.
 select lives_ok(
@@ -140,26 +141,28 @@ select is(
   2,
   'every prediction write appends a revision (insert + update = 2)');
 
--- Neither of the next two raises, and that is the point worth recording: predictions and
--- prediction_revisions have no client DELETE/UPDATE policy, so RLS filters every candidate
--- row out and the statement is a silent no-op before any trigger is reached. The triggers
--- underneath are the backstop for service-role paths, tested separately below.
-delete from public.predictions
- where user_id = '11111111-1111-4111-8111-111111111111';
+-- Three layers guard these, and the outermost is the one that fires: `authenticated` was
+-- never granted DELETE on predictions or UPDATE on prediction_revisions, so the statement
+-- is refused before RLS or any trigger is consulted. Underneath, there is also no policy,
+-- and underneath that the immutability triggers catch service-role paths (tested below).
+select throws_ok(
+  $$delete from public.predictions
+     where user_id = '11111111-1111-4111-8111-111111111111'$$,
+  '42501',
+  null,
+  'a client cannot delete a prediction — scores are permanent');
+
+select throws_ok(
+  $$update public.prediction_revisions set value = '{"home":9,"away":9}'::jsonb$$,
+  '42501',
+  null,
+  'a client cannot rewrite the revision audit trail');
 
 select is(
   (select count(*)::int from public.predictions
     where user_id = '11111111-1111-4111-8111-111111111111'),
   1,
-  'a client delete removes nothing — scores are permanent');
-
-update public.prediction_revisions set value = '{"home":9,"away":9}'::jsonb;
-
-select is(
-  (select count(*)::int from public.prediction_revisions
-    where value = '{"home":9,"away":9}'::jsonb),
-  0,
-  'a client cannot rewrite the revision audit trail');
+  'and the prediction is still there');
 
 reset role;
 reset request.jwt.claims;

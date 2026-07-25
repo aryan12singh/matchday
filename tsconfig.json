@@ -1,5 +1,9 @@
 {
-  "// note": "Root config exists for editor tooling only. `pnpm typecheck` runs tsc per workspace package.",
-  "files": [],
-  "include": []
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": ["scripts/**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

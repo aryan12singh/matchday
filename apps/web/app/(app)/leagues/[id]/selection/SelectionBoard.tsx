@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from 'react';
 
 import { CountdownChip } from '../../../../../components/match/CountdownChip';
 import { TeamChip } from '../../../../../components/match/TeamChip';
+import { VoteTallyBar } from '../../../../../components/match/VoteTallyBar';
 import { Button } from '../../../../../components/ui/Button';
 import { EmptyState, ErrorState } from '../../../../../components/ui/EmptyState';
 import { finalizeSelection, toggleVote } from './actions';
@@ -39,6 +40,7 @@ export function SelectionBoard({
   isOrganizer,
   mode,
   finalized,
+  memberCount,
 }: {
   leagueSeasonId: string;
   roundId: string;
@@ -47,6 +49,8 @@ export function SelectionBoard({
   isOrganizer: boolean;
   mode: 'admin_pick' | 'vote';
   finalized: boolean;
+  /** League size — the tally bar's denominator. */
+  memberCount: number;
 }) {
   const [rows, setRows] = useState(fixtures);
   const [picked, setPicked] = useState<Set<string>>(
@@ -160,23 +164,13 @@ export function SelectionBoard({
                 </span>
 
                 <span className="flex items-center gap-3">
-                  <VoteTally votes={row.votes} total={Math.max(...rows.map((r) => r.votes), 1)} />
-
-                  {canVote ? (
-                    <button
-                      type="button"
-                      onClick={() => onToggleVote(row.fixtureId)}
-                      aria-pressed={row.votedByMe}
-                      disabled={pending}
-                      className={`min-h-tap rounded-md px-4 font-display text-[11px] font-bold uppercase tracking-label ${
-                        row.votedByMe
-                          ? 'bg-accent text-on-accent'
-                          : 'bg-surface-2 text-text-2 hover:text-text'
-                      }`}
-                    >
-                      {row.votedByMe ? 'Voted' : 'Vote'}
-                    </button>
-                  ) : null}
+                  <VoteTallyBar
+                    votes={row.votes}
+                    max={memberCount}
+                    mine={row.votedByMe}
+                    disabled={pending || !canVote}
+                    {...(canVote ? { onToggle: () => onToggleVote(row.fixtureId) } : {})}
+                  />
 
                   {isOrganizer && !finalized ? (
                     <label className="flex min-h-tap cursor-pointer items-center gap-2 text-[13px]">
@@ -218,20 +212,5 @@ export function SelectionBoard({
         </div>
       ) : null}
     </div>
-  );
-}
-
-/** Horizontal tally bar. The number is the truth; the bar is the glance. */
-function VoteTally({ votes, total }: { votes: number; total: number }) {
-  return (
-    <span className="flex items-center gap-2" title={`${votes} votes`}>
-      <span aria-hidden="true" className="h-1.5 w-16 overflow-hidden rounded-full bg-surface-3">
-        <span
-          className="block h-full rounded-full bg-accent"
-          style={{ width: `${Math.round((votes / total) * 100)}%` }}
-        />
-      </span>
-      <span className="font-num text-[12px] font-semibold tabular-nums text-text-2">{votes}</span>
-    </span>
   );
 }

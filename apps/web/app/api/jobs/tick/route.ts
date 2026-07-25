@@ -2,6 +2,8 @@ import { timingSafeEqual } from 'node:crypto';
 
 import { NextResponse, type NextRequest } from 'next/server';
 
+import { runTick } from '@matchday/jobs';
+
 import { createServiceClient } from '../../../../lib/supabase/service';
 
 /**
@@ -39,25 +41,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
 
-  const client = createServiceClient();
   const started = Date.now();
+  const result = await runTick(createServiceClient());
 
-  // Ordered by consequence. The lock sweep runs first and unconditionally: reveal
-  // policies key off market status, so a late sweep means predictions stay hidden past
-  // kickoff — or worse, a market reads "open" to a UI that then offers an input the
-  // database will reject.
-  const { data: locked } = await client.rpc('lock_markets_sweep');
-
-  // Selection fallbacks: a round unfinalized 24h before its first kickoff counts
-  // everything (addendum §B). Cheap, and skipping it can cost a league a matchweek.
-  const { data: fallbacks } = await client.rpc('apply_selection_fallbacks');
-
-  return NextResponse.json({
-    ok: true,
-    marketsLocked: locked ?? 0,
-    selectionFallbacks: fallbacks ?? 0,
-    durationMs: Date.now() - started,
-  });
+  // 200 even with step errors: pg_cron has no useful reaction to a 500, and a
+  // non-2xx would obscure the steps that did succeed. The errors are in the body and
+  // in sync_runs, which is where /ops looks.
+  return NextResponse.json({ ok: result.errors.length === 0, ...result, durationMs: Date.now() - started });
 }
 
 // GET is rejected on purpose: a tick has side effects, and a URL that mutates state is a

@@ -49,7 +49,10 @@ jobs:
 
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned, not `latest`. An unpinned CLI is how the explicit-grants bug hid:
+          # local ran an older version that still handed out Supabase's old default
+          # privileges, CI ran a newer one that does not, and the two disagreed for days.
+          version: 2.109.1
 
       - name: Start local stack
         run: supabase start

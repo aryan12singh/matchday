@@ -12,5 +12,7 @@ export * from './sync-runs';
 export * from './entity-map';
 export * from './settlement';
 export * from './bootstrap';
+export * from './snapshots';
+export * from './tick';
 
 export const JOBS_PACKAGE = '@matchday/jobs' as const;

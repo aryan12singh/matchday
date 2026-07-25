@@ -20,6 +20,34 @@ export interface ComponentRow extends ScoreComponent {
   marketId: string;
 }
 
+/** A score_components row as the database returns it — `category` is plain text there. */
+export interface RawComponentRow {
+  user_id: string;
+  market_id: string;
+  category: string;
+  hit: boolean;
+}
+
+/**
+ * Narrows database rows to ComponentRow, dropping unknown categories.
+ *
+ * Dropping rather than casting is deliberate: a component written by a future engine
+ * version must not be valued at whatever `weights[unknown]` happens to be. Better to
+ * under-count visibly than to award points from a category this build does not
+ * understand.
+ */
+export function toComponentRows(rows: readonly RawComponentRow[]): ComponentRow[] {
+  const known = new Set<string>(SCORE_CATEGORIES);
+  return rows
+    .filter((row) => known.has(row.category))
+    .map((row) => ({
+      userId: row.user_id,
+      marketId: row.market_id,
+      category: row.category as ScoreCategory,
+      hit: row.hit,
+    }));
+}
+
 export interface LeaderboardMember {
   userId: string;
   username: string;

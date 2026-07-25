@@ -41,7 +41,7 @@ export function Skeleton({ className = 'h-5 w-full' }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
-      className={`animate-pulse rounded-sm bg-[var(--skeleton)] ${className}`}
+      className={`skeleton rounded-sm ${className}`}
     />
   );
 }
