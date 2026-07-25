@@ -2191,6 +2191,7 @@ export type Database = {
           league_id: string
         }[]
       }
+      current_table_order: { Args: { p_season_id: string }; Returns: string[] }
       enrol_league_season: {
         Args: {
           p_league_id: string
@@ -2232,6 +2233,19 @@ export type Database = {
         Returns: {
           fixture_id: string
         }[]
+      }
+      league_score_components: {
+        Args: { p_league_season_id: string; p_round_id?: string }
+        Returns: {
+          category: string
+          hit: boolean
+          market_id: string
+          user_id: string
+        }[]
+      }
+      league_weights: {
+        Args: { p_league_season_id: string; p_round_number?: number }
+        Returns: Json
       }
       leave_league: { Args: { p_league_id: string }; Returns: undefined }
       lock_markets_sweep: { Args: never; Returns: number }
@@ -2284,6 +2298,15 @@ export type Database = {
       save_season_table_prediction: {
         Args: { p_order: string[]; p_season_id: string }
         Returns: string
+      }
+      table_race_entries: {
+        Args: { p_league_season_id: string }
+        Returns: {
+          joined_at: string
+          predicted_order: Json
+          user_id: string
+          username: string
+        }[]
       }
       toggle_fixture_vote: {
         Args: {
