@@ -1,0 +1,2 @@
+Integration tests (RLS + lock triggers) land in Task 12; e2e later.
+design-system.test.ts guards the Task 1 design-system install.

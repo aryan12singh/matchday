@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<style>body{margin:0;background:#08090A;color:var(--text);font:var(--text-body)}*{box-sizing:border-box}
+a{color:var(--text-2)}a:hover{color:var(--text)}
+@keyframes mdpulse{0%,100%{opacity:1}50%{opacity:.35}}.md-pulse{animation:mdpulse 1.6s infinite}</style>
+</helmet>
+
+<section style="padding:48px 56px 96px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="assets/icon.svg" style="width:28px;height:28px;border-radius:7px">
+    <span style="font:800 20px var(--font-display);letter-spacing:-.01em">Predict v2</span>
+    <span style="font:var(--text-small);color:var(--text-3)">autosave copy · per-fixture lock times · next-to-lock rail · clearer league labels · incomplete filter</span>
+  </div>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ============ MOBILE ============ -->
+    <div data-screen-label="Predict v2 mobile" style="width:390px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="padding:18px 20px 14px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between">
+          <span style="font:900 26px var(--font-display);letter-spacing:-.01em">MATCHWEEK 9</span>
+          <span style="font:600 13px var(--font-num);color:var(--text-2);font-variant-numeric:tabular-nums">7<span style="color:var(--text-3)">/10</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font:var(--text-small);color:var(--text-2)">Saved automatically · editable until each kickoff</span>
+          <span style="margin-left:auto;font:600 12px var(--font-num);color:var(--success)">✓ synced</span>
+        </div>
+        <!-- next to lock rail -->
+        <div style="display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+          <span style="display:flex;flex-direction:column;gap:2px;flex:1">
+            <span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">NEXT TO LOCK</span>
+            <span style="font:700 13px var(--font-display)">Newcastle — Chelsea</span>
+          </span>
+          <span style="font:700 18px var(--font-num);font-variant-numeric:tabular-nums;color:var(--live)">14:32:08</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font:700 12px var(--font-display);color:var(--on-accent);background:var(--accent);padding:8px 12px;border-radius:999px">Incomplete · 3</span>
+          <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border);padding:8px 12px;border-radius:999px">All</span>
+          <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border);padding:8px 12px;border-radius:999px">Included only</span>
+        </div>
+      </div>
+
+      <div style="padding:14px 20px 24px;display:flex;flex-direction:column;gap:12px">
+        <!-- editable, unpredicted -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font:600 12px var(--font-num);color:var(--text-2)">SAT 15:00 · locks in 1d 17h</span>
+            <span style="margin-left:auto;font:600 11px var(--font-display);color:var(--accent)">1 of 3 left</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2);flex:none">BHA</span>
+            <span style="flex:1;font:700 15px var(--font-display)">Brighton</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:30px;text-align:center;font:700 26px var(--font-num);color:var(--text-3)">–</span>
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2);flex:none">WOL</span>
+            <span style="flex:1;font:700 15px var(--font-display)">Wolverhampton Wanderers</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:30px;text-align:center;font:700 26px var(--font-num);color:var(--text-3)">–</span>
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:12px">
+            <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--accent-dim)"><span style="width:5px;height:5px;border-radius:1.5px;background:var(--accent)"></span><span style="font:600 11px var(--font-display);color:var(--accent)">Included in The Boot Room</span></span>
+            <span style="margin-left:auto;font:700 12px var(--font-display);color:var(--text-2)">MARKETS ▾</span>
+          </div>
+        </div>
+
+        <!-- predicted, collapsed markets -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font:600 12px var(--font-num);color:var(--text-2)">SAT 17:30 · locks in 1d 19h</span>
+            <span style="margin-left:auto;font:600 12px var(--font-num);color:var(--success)">✓ saved 2m ago</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2);flex:none">EVE</span>
+            <span style="flex:1;font:700 15px var(--font-display)">Everton</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:30px;text-align:center;font:700 26px var(--font-num);font-variant-numeric:tabular-nums">0</span>
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:30px;height:30px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2);flex:none">FUL</span>
+            <span style="flex:1;font:700 15px var(--font-display)">Fulham</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:30px;text-align:center;font:700 26px var(--font-num);font-variant-numeric:tabular-nums">2</span>
+              <span style="width:46px;height:46px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 20px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:12px">
+            <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;border:1px dashed var(--border-strong)"><span style="font:600 11px var(--font-display);color:var(--text-3)">Not selected for this league</span></span>
+            <span style="font:var(--text-small);color:var(--text-3)">still counts in FPL Rejects</span>
+            <span style="margin-left:auto;font:700 12px var(--font-display);color:var(--text-2)">MARKETS ▾</span>
+          </div>
+        </div>
+
+        <!-- locked -->
+        <div style="display:flex;gap:14px;padding:4px 2px">
+          <span style="width:3px;border-radius:2px;background:var(--locked);flex:none;opacity:.5"></span>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="10" height="12" viewBox="0 0 9 11"><path d="M1.5 5V3.5a3 3 0 016 0V5" stroke="var(--locked)" stroke-width="1.4" fill="none"></path><rect x="0.7" y="4.8" width="7.6" height="5.5" rx="1.2" fill="var(--locked)"></rect></svg>
+              <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--locked)">LOCKED 12:30</span>
+              <span style="margin-left:auto;font:var(--text-small);color:var(--text-3)">picks now visible to the league</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="flex:1;text-align:right;font:700 14px var(--font-display);color:var(--text-2)">Newcastle</span>
+              <span style="font:700 22px var(--font-num);font-variant-numeric:tabular-nums;color:var(--text-2)">1:1</span>
+              <span style="flex:1;font:700 14px var(--font-display);color:var(--text-2)">Chelsea</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- live borderless -->
+        <div style="display:flex;gap:14px;padding:4px 2px">
+          <span style="width:3px;border-radius:2px;background:var(--live);flex:none"></span>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="md-pulse" style="width:6px;height:6px;border-radius:50%;background:var(--live)"></span>
+              <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--live)">LIVE · 64′</span>
+              <span style="margin-left:auto;font:600 13px var(--font-num);color:var(--success)">Projected +6</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <span style="flex:1;text-align:right;font:700 14px var(--font-display)">Arsenal</span>
+              <span style="font:700 26px var(--font-num);font-variant-numeric:tabular-nums">2:1</span>
+              <span style="flex:1;font:700 14px var(--font-display)">Spurs</span>
+            </div>
+            <span style="font:var(--text-small);color:var(--text-2)">exact alive · Saka first ✓ · match centre →</span>
+          </div>
+        </div>
+
+        <!-- settled + void compact -->
+        <div style="display:flex;gap:14px;padding:4px 2px">
+          <span style="width:3px;border-radius:2px;background:var(--success);flex:none;opacity:.6"></span>
+          <div style="flex:1;display:flex;align-items:center;gap:12px">
+            <span style="font:600 12px var(--font-num);color:var(--text-3);width:30px">FT</span>
+            <span style="flex:1;font:700 14px var(--font-display)">Liverpool 3:0 Bournemouth</span>
+            <span style="font:var(--text-small);color:var(--text-2)">exact ✓</span>
+            <span style="font:600 13px var(--font-num);color:var(--success)">+9</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;padding:4px 2px;opacity:.55">
+          <span style="width:3px;border-radius:2px;border-left:3px dashed var(--void);flex:none"></span>
+          <div style="flex:1;display:flex;align-items:center;gap:12px">
+            <span style="font:600 12px var(--font-num);color:var(--text-3);width:30px">P–P</span>
+            <span style="flex:1;font:700 14px var(--font-display);color:var(--text-3)">West Ham — Burnley</span>
+            <span style="font:var(--text-small);color:var(--text-3)">void · no points either way · → MW14</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ DESKTOP ============ -->
+    <div data-screen-label="Predict v2 desktop" style="width:900px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:28px 32px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:baseline;gap:16px">
+        <span style="font:900 30px var(--font-display);letter-spacing:-.01em">MATCHWEEK 9</span>
+        <span style="font:var(--text-small);color:var(--text-2)">Saved automatically · editable until each kickoff · <span style="color:var(--success)">✓ synced</span></span>
+        <span style="margin-left:auto;display:inline-flex;align-items:center;gap:10px"><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">NEXT LOCK</span><span style="font:700 20px var(--font-num);font-variant-numeric:tabular-nums;color:var(--live)">14:32:08</span></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font:700 12px var(--font-display);color:var(--on-accent);background:var(--accent);padding:8px 14px;border-radius:999px">Incomplete · 3</span>
+        <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border);padding:8px 14px;border-radius:999px">All fixtures</span>
+        <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border);padding:8px 14px;border-radius:999px">Included in Boot Room · 6</span>
+        <span style="margin-left:auto;font:var(--text-small);color:var(--text-3)">Tab ⇥ next incomplete · ± adjusts score</span>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <!-- expanded editable row -->
+        <div style="border-left:3px solid var(--accent);background:var(--surface);border-radius:10px;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:18px;padding:16px 22px">
+            <span style="display:flex;flex-direction:column;gap:1px;width:106px"><span style="font:600 13px var(--font-num);color:var(--text-2)">SAT 15:00</span><span style="font:var(--text-small);color:var(--text-3)">locks 1d 17h</span></span>
+            <span style="width:230px;font:700 16px var(--font-display)">Brighton — Wolves</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:40px;height:40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 17px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:26px;text-align:center;font:700 24px var(--font-num);color:var(--text-3)">–</span>
+              <span style="width:40px;height:40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 17px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+              <span style="color:var(--text-3);font:700 18px var(--font-num);padding:0 4px">:</span>
+              <span style="width:40px;height:40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 17px var(--font-display);display:inline-flex;align-items:center;justify-content:center">−</span>
+              <span style="min-width:26px;text-align:center;font:700 24px var(--font-num);color:var(--text-3)">–</span>
+              <span style="width:40px;height:40px;border-radius:8px;border:1px solid var(--border-strong);background:var(--surface-2);font:700 17px var(--font-display);display:inline-flex;align-items:center;justify-content:center">+</span>
+            </div>
+            <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--accent-dim)"><span style="width:5px;height:5px;border-radius:1.5px;background:var(--accent)"></span><span style="font:600 11px var(--font-display);color:var(--accent)">Included</span></span>
+            <span style="font:700 12px var(--font-display);color:var(--accent)">MARKETS ▴</span>
+          </div>
+          <div style="display:flex;gap:14px;padding:0 22px 18px 146px;flex-wrap:wrap">
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">GOAL DIFF</span><span style="display:flex;gap:6px"><span style="font:600 12px var(--font-display);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px;color:var(--text-2)">−1</span><span style="font:600 12px var(--font-display);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px;color:var(--text-2)">0</span><span style="font:700 12px var(--font-display);background:var(--accent);color:var(--on-accent);border-radius:6px;padding:8px 12px">+1</span></span></span>
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">BTTS</span><span style="display:flex;gap:6px"><span style="font:600 12px var(--font-display);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px;color:var(--text-2)">YES</span><span style="font:700 12px var(--font-display);background:var(--accent);color:var(--on-accent);border-radius:6px;padding:8px 12px">NO</span></span></span>
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">FIRST SCORER</span><span style="display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px;font:600 12px var(--font-display);color:var(--text-2)">Search squad… ⌄</span></span>
+          </div>
+        </div>
+        <!-- compact rows, borderless -->
+        <div style="display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border)">
+          <span style="display:flex;flex-direction:column;gap:1px;width:106px"><span style="font:600 13px var(--font-num);color:var(--text-2)">SAT 17:30</span><span style="font:var(--text-small);color:var(--text-3)">locks 1d 19h</span></span>
+          <span style="width:230px;font:700 15px var(--font-display)">Everton — Fulham</span>
+          <span style="font:700 22px var(--font-num);font-variant-numeric:tabular-nums">0:2</span>
+          <span style="font:var(--text-small);color:var(--text-2)">BTTS no · first team FUL</span>
+          <span style="margin-left:auto;font:600 12px var(--font-num);color:var(--success)">✓ saved</span>
+          <span style="display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:6px;border:1px dashed var(--border-strong)"><span style="font:600 11px var(--font-display);color:var(--text-3)">Not selected</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border);border-left:3px solid var(--live)">
+          <span style="display:flex;align-items:center;gap:6px;width:106px"><span class="md-pulse" style="width:6px;height:6px;border-radius:50%;background:var(--live)"></span><span style="font:600 13px var(--font-num);color:var(--live)">64′</span></span>
+          <span style="width:230px;font:700 15px var(--font-display)">Arsenal — Spurs</span>
+          <span style="font:700 22px var(--font-num);font-variant-numeric:tabular-nums">2:1</span>
+          <span style="font:var(--text-small);color:var(--text-2)">exact alive · Saka first ✓</span>
+          <span style="margin-left:auto;font:600 13px var(--font-num);color:var(--success)">Projected +6</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:18px;padding:13px 22px">
+          <span style="font:600 13px var(--font-num);color:var(--text-3);width:106px">FRI FT</span>
+          <span style="width:230px;font:700 15px var(--font-display)">Liverpool — Bournemouth</span>
+          <span style="font:700 22px var(--font-num);font-variant-numeric:tabular-nums">3:0</span>
+          <span style="font:var(--text-small);color:var(--text-2)">exact score ✓</span>
+          <span style="margin-left:auto;font:600 13px var(--font-num);color:var(--success)">+9 settled</span>
+        </div>
+      </div>
+      <span style="font:var(--text-small);color:var(--text-3)">A prediction is global — if a fixture isn't selected here it may still count in your other leagues. Failure/empty/skeleton states unchanged from <a href="Predict.dc.html">v1</a>.</span>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

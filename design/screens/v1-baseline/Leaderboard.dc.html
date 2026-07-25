@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<style>body{margin:0;background:#08090A;color:var(--text);font:var(--text-body)}*{box-sizing:border-box}
+a{color:var(--text-2)}a:hover{color:var(--text)}
+@keyframes mdpulse{0%,100%{opacity:1}50%{opacity:.35}}.md-pulse{animation:mdpulse 1.6s infinite}
+@keyframes mdshine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.md-skel{background:linear-gradient(90deg,var(--skeleton) 25%,var(--skeleton-shine) 50%,var(--skeleton) 75%);background-size:200% 100%;animation:mdshine 1.4s infinite;border-radius:6px}</style>
+</helmet>
+
+<section style="padding:48px 56px 96px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="assets/icon.svg" style="width:28px;height:28px;border-radius:7px">
+    <span style="font:800 20px var(--font-display);letter-spacing:-.01em">Leaderboard</span>
+    <span style="font:var(--text-small);color:var(--text-3)">screens 9/10 · overall + Table race tab · tap rows to expand · empty/loading/failure below</span>
+  </div>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ============ MOBILE ============ -->
+    <div data-screen-label="Leaderboard mobile" style="width:390px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="padding:18px 16px 0;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:var(--text-h2);letter-spacing:-.01em">The Boot Room</span>
+          <span style="display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 10px;border-radius:6px;background:var(--prize-dim)"><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--prize)">POT</span><span style="font:var(--text-num-sm);font-variant-numeric:tabular-nums;color:var(--prize)">£120</span></span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button onClick="{{ tabOverall }}" style="flex:1;min-height:36px;border-radius:6px;border:none;cursor:pointer;font:700 12px var(--font-display);background:{{ tabBgOverall }};color:{{ tabColorOverall }}">OVERALL</button>
+          <button onClick="{{ tabMw }}" style="flex:1;min-height:36px;border-radius:6px;border:none;cursor:pointer;font:700 12px var(--font-display);background:{{ tabBgMw }};color:{{ tabColorMw }}">MW 8</button>
+          <button onClick="{{ tabRace }}" style="flex:1;min-height:36px;border-radius:6px;border:none;cursor:pointer;font:700 12px var(--font-display);background:{{ tabBgRace }};color:{{ tabColorRace }}">TABLE RACE</button>
+        </div>
+      </div>
+
+      <sc-if value="{{ showOverall }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:12px 16px 24px;display:flex;flex-direction:column;gap:0">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+              <div style="border-bottom:1px solid var(--border);background:{{ r.bg }}">
+                <button onClick="{{ r.toggle }}" style="display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 16px;background:none;border:none;cursor:pointer;text-align:left;color:var(--text)">
+                  <span style="width:22px;font:var(--text-num);font-variant-numeric:tabular-nums;color:{{ r.rankColor }}">{{ r.rank }}</span>
+                  <span style="width:28px;height:28px;border-radius:50%;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font:700 11px var(--font-display);color:{{ r.avColor }};flex:none">{{ r.avatar }}</span>
+                  <span style="flex:1;font:var(--text-body-strong)">{{ r.name }}<span style="color:var(--text-3);font-weight:400">{{ r.youTag }}</span></span>
+                  <span style="font:var(--text-num-sm);color:var(--prize)">{{ r.prize }}</span>
+                  <span style="font:var(--text-num-sm);color:{{ r.moveColor }};width:32px;text-align:right">{{ r.move }}</span>
+                  <span style="font:var(--text-num);font-variant-numeric:tabular-nums;width:40px;text-align:right">{{ r.pts }}</span>
+                </button>
+                <sc-if value="{{ r.expanded }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:2px 16px 14px 62px;display:flex;gap:14px;flex-wrap:wrap">
+                    <sc-for list="{{ r.breakdown }}" as="b" hint-placeholder-count="4">
+                      <span style="display:flex;flex-direction:column;gap:2px"><span style="font:600 9px var(--font-display);letter-spacing:.1em;color:var(--text-3)">{{ b.k }}</span><span style="font:var(--text-num-sm);color:var(--text-2)">{{ b.v }}</span></sc-for>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font:var(--text-small);color:var(--text-3);padding:10px 4px 0">Tap a row for the category breakdown · settled after score run #214, 22:41</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showRace }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:12px 16px 24px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:10px 14px">
+            <span style="font:var(--text-small);color:var(--text-2)">Season table predictions · <span style="color:var(--text)">lowest total drift wins</span> · scored against today's table, settles after MW38</span>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+            <sc-for list="{{ raceRows }}" as="r" hint-placeholder-count="7">
+              <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 16px;border-bottom:1px solid var(--border);background:{{ r.bg }}">
+                <span style="width:22px;font:var(--text-num);font-variant-numeric:tabular-nums;color:{{ r.rankColor }}">{{ r.rank }}</span>
+                <span style="width:28px;height:28px;border-radius:50%;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font:700 11px var(--font-display);color:{{ r.avColor }};flex:none">{{ r.avatar }}</span>
+                <span style="flex:1;font:var(--text-body-strong)">{{ r.name }}<span style="color:var(--text-3);font-weight:400">{{ r.youTag }}</span></span>
+                <span style="font:var(--text-num-sm);color:var(--text-3)">{{ r.exact }} exact</span>
+                <span style="font:var(--text-num-sm);color:{{ r.moveColor }};width:32px;text-align:right">{{ r.move }}</span>
+                <span style="font:var(--text-num);font-variant-numeric:tabular-nums;width:44px;text-align:right">Σ {{ r.drift }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <span style="font:var(--text-small);color:var(--text-3)">Tiebreak: Σ diff² then exact hits · own prize line: £20 to the winner</span>
+        </div>
+      </sc-if>
+    </div>
+
+    <!-- ============ DESKTOP full breakdown ============ -->
+    <div data-screen-label="Leaderboard desktop" style="width:940px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:26px 28px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;align-items:center;gap:16px">
+        <span style="font:var(--text-h2);letter-spacing:-.01em">Overall · desktop</span>
+        <span style="font:var(--text-small);color:var(--text-3)">full category columns — the Strategist's screen · sortable</span>
+        <span style="margin-left:auto;display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 10px;border-radius:6px;background:var(--prize-dim)"><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--prize)">POT</span><span style="font:var(--text-num-sm);color:var(--prize)">£120</span></span>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:0;padding:10px 18px;border-bottom:1px solid var(--border);font:600 9px var(--font-display);letter-spacing:.1em;color:var(--text-3)">
+          <span style="width:30px">#</span><span style="flex:1">MEMBER</span>
+          <span style="width:64px;text-align:right">OUTCOME</span><span style="width:52px;text-align:right">EXACT</span><span style="width:44px;text-align:right">GD</span><span style="width:44px;text-align:right">TG</span><span style="width:52px;text-align:right">BTTS</span><span style="width:62px;text-align:right">1ST TEAM</span><span style="width:70px;text-align:right">1ST SCORER</span><span style="width:56px;text-align:right;color:var(--text-2)">ACC%</span><span style="width:56px;text-align:right">PRIZE</span><span style="width:44px;text-align:right">±MW</span><span style="width:52px;text-align:right;color:var(--text-2)">PTS ▾</span>
+        </div>
+        <sc-for list="{{ deskRows }}" as="r" hint-placeholder-count="7">
+          <div style="display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border);background:{{ r.bg }};font-variant-numeric:tabular-nums">
+            <span style="width:30px;font:var(--text-num-sm);color:{{ r.rankColor }}">{{ r.rank }}</span>
+            <span style="flex:1;display:flex;align-items:center;gap:10px"><span style="width:26px;height:26px;border-radius:50%;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:{{ r.avColor }}">{{ r.avatar }}</span><span style="font:var(--text-body-strong)">{{ r.name }}<span style="color:var(--text-3);font-weight:400">{{ r.youTag }}</span></span></span>
+            <span style="width:64px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.outcome }}</span>
+            <span style="width:52px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.exact }}</span>
+            <span style="width:44px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.gd }}</span>
+            <span style="width:44px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.tg }}</span>
+            <span style="width:52px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.btts }}</span>
+            <span style="width:62px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.ft }}</span>
+            <span style="width:70px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.fs }}</span>
+            <span style="width:56px;text-align:right;font:var(--text-num-sm);color:var(--text-2)">{{ r.acc }}</span>
+            <span style="width:56px;text-align:right;font:var(--text-num-sm);color:var(--prize)">{{ r.prize }}</span>
+            <span style="width:44px;text-align:right;font:var(--text-num-sm);color:{{ r.moveColor }}">{{ r.move }}</span>
+            <span style="width:52px;text-align:right;font:var(--text-num)">{{ r.pts }}</span>
+          </div>
+        </sc-for>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 18px">
+          <span style="font:var(--text-small);color:var(--text-3)">Priya &amp; Jamie tied on 318 — Priya ranks higher on exact scores (21 v 17)</span>
+          <span style="margin-left:auto;font:var(--text-small);color:var(--text-3)">points-only leagues hide POT + PRIZE columns app-wide</span>
+        </div>
+      </div>
+
+      <!-- states -->
+      <div style="display:flex;gap:14px">
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">LOADING</span>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px">
+            <div style="display:flex;align-items:center;gap:12px;min-height:46px"><span class="md-skel" style="width:18px;height:12px"></span><span class="md-skel" style="width:26px;height:26px;border-radius:50%"></span><span class="md-skel" style="width:120px;height:12px"></span><span class="md-skel" style="width:36px;height:12px;margin-left:auto"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:46px"><span class="md-skel" style="width:18px;height:12px"></span><span class="md-skel" style="width:26px;height:26px;border-radius:50%"></span><span class="md-skel" style="width:90px;height:12px"></span><span class="md-skel" style="width:36px;height:12px;margin-left:auto"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:46px"><span class="md-skel" style="width:18px;height:12px"></span><span class="md-skel" style="width:26px;height:26px;border-radius:50%"></span><span class="md-skel" style="width:104px;height:12px"></span><span class="md-skel" style="width:36px;height:12px;margin-left:auto"></span></div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">EMPTY — SEASON NOT STARTED</span>
+          <div style="background:var(--surface);border:1px dashed var(--border-strong);border-radius:10px;padding:24px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;min-height:146px;justify-content:center">
+            <span style="font:var(--text-num-lg);color:var(--text-3)">0:0</span>
+            <span style="font:var(--text-body-strong)">Nothing on the board yet</span>
+            <span style="font:var(--text-small);color:var(--text-2)">Points land when MW1 settles. Until then, everyone's a genius.</span>
+            <span style="font:600 12px var(--font-display);color:var(--accent)">PREDICT MW1 →</span>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+          <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">FAILURE — STALE DATA</span>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:146px">
+            <div style="display:flex;align-items:center;gap:12px;opacity:.55">
+              <span style="font:var(--text-num-sm);color:var(--text-2)">1</span><span style="width:26px;height:26px;border-radius:50%;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2)">DK</span><span style="font:var(--text-body-strong)">Dan</span><span style="margin-left:auto;font:var(--text-num-sm)">341</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;background:var(--warning-dim);border:1px solid var(--warning);border-radius:8px;padding:10px 12px">
+              <span style="font:var(--text-small);color:var(--text-2)">Couldn't refresh — showing standings from <span style="color:var(--warning)">12 min ago</span></span>
+              <span style="margin-left:auto;font:600 11px var(--font-display);color:var(--text);border:1px solid var(--border-strong);border-radius:6px;padding:6px 10px">RETRY</span>
+            </div>
+            <span style="font:var(--text-small);color:var(--text-3)">Provisional banner shows while matches are in play; flips to settled with the score-run stamp.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { tab: 'overall', open: 2 };
+  renderVals() {
+    const t = this.state.tab;
+    const tabStyle = (k) => ({
+      [`tabBg${k[0].toUpperCase() + k.slice(1)}`]: t === k ? 'var(--accent)' : 'var(--surface-2)',
+      [`tabColor${k[0].toUpperCase() + k.slice(1)}`]: t === k ? 'var(--on-accent)' : 'var(--text-2)' });
+    const data = [
+      { rank: 1, name: 'Dan', avatar: 'DK', pts: 341, move: 0, prize: '+£40', bd: { OUTCOME: 190, EXACT: 90, GD: 20, TG: 8, BTTS: 12, '1ST SCORER': 21, ACC: '64%' } },
+      { rank: 2, name: 'Priya', avatar: 'PS', pts: 334, move: 1, prize: '+£20', bd: { OUTCOME: 184, EXACT: 96, GD: 16, TG: 10, BTTS: 8, '1ST SCORER': 20, ACC: '62%' } },
+      { rank: 3, name: 'Aryan', avatar: 'AR', pts: 329, move: 2, me: true, bd: { OUTCOME: 180, EXACT: 84, GD: 24, TG: 6, BTTS: 12, '1ST SCORER': 23, ACC: '61%' } },
+      { rank: 4, name: 'Jamie', avatar: 'JW', pts: 318, move: -2, bd: { OUTCOME: 178, EXACT: 74, GD: 22, TG: 12, BTTS: 10, '1ST SCORER': 22, ACC: '58%' } },
+      { rank: 5, name: 'Sam', avatar: 'SO', pts: 301, move: -1, bd: { OUTCOME: 170, EXACT: 66, GD: 18, TG: 14, BTTS: 12, '1ST SCORER': 21, ACC: '55%' } },
+      { rank: 6, name: 'Marcus', avatar: 'MB', pts: 287, move: 0, bd: { OUTCOME: 162, EXACT: 60, GD: 20, TG: 10, BTTS: 14, '1ST SCORER': 21, ACC: '53%' } },
+      { rank: 7, name: 'Ollie', avatar: 'OT', pts: 254, move: 0, prize: '−£60', bd: { OUTCOME: 150, EXACT: 48, GD: 16, TG: 8, BTTS: 12, '1ST SCORER': 20, ACC: '47%' } },
+    ];
+    const deco = (r, i) => ({ ...r,
+      youTag: r.me ? ' · you' : '',
+      bg: r.me ? 'var(--accent-dim)' : 'transparent',
+      rankColor: r.rank <= 3 ? 'var(--text)' : 'var(--text-2)',
+      avColor: r.me ? 'var(--accent)' : 'var(--text-2)',
+      prize: r.prize || '',
+      move: r.move > 0 ? '▲' + r.move : r.move < 0 ? '▼' + (-r.move) : '—',
+      moveColor: r.move > 0 ? 'var(--success)' : r.move < 0 ? 'var(--danger)' : 'var(--text-3)' });
+    const rows = data.map((r, i) => ({ ...deco(r),
+      expanded: this.state.open === i,
+      toggle: () => this.setState(s => ({ open: s.open === i ? -1 : i })),
+      breakdown: Object.entries(r.bd).map(([k, v]) => ({ k, v })) }));
+    const deskRows = data.map(r => ({ ...deco(r),
+      outcome: r.bd.OUTCOME, exact: r.bd.EXACT, gd: r.bd.GD, tg: r.bd.TG, btts: r.bd.BTTS,
+      ft: 12 + r.rank, fs: r.bd['1ST SCORER'], acc: r.bd.ACC }));
+    const race = [
+      { rank: 1, name: 'Priya', avatar: 'PS', drift: 27, exact: 7, move: 0 },
+      { rank: 2, name: 'Aryan', avatar: 'AR', drift: 31, exact: 6, move: 1, me: true },
+      { rank: 3, name: 'Dan', avatar: 'DK', drift: 34, exact: 5, move: -1 },
+      { rank: 4, name: 'Sam', avatar: 'SO', drift: 41, exact: 4, move: 0 },
+      { rank: 5, name: 'Jamie', avatar: 'JW', drift: 44, exact: 6, move: 2 },
+      { rank: 6, name: 'Marcus', avatar: 'MB', drift: 52, exact: 2, move: -1 },
+      { rank: 7, name: 'Ollie', avatar: 'OT', drift: 58, exact: 3, move: -1 },
+    ].map(r => deco(r));
+    return {
+      ...tabStyle('overall'), ...tabStyle('mw'), ...tabStyle('race'),
+      tabOverall: () => this.setState({ tab: 'overall' }),
+      tabMw: () => this.setState({ tab: 'mw' }),
+      tabRace: () => this.setState({ tab: 'race' }),
+      showOverall: t !== 'race', showRace: t === 'race',
+      rows, deskRows, raceRows: race };
+  }
+}
+</script>
+</body>
+</html>

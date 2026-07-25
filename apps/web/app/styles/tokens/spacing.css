@@ -1,0 +1,17 @@
+/* MatchDay spacing / radius / elevation */
+:root {
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+
+  --r-sm: 6px;    /* chips, badges */
+  --r-md: 10px;   /* cards, inputs, buttons */
+  --r-lg: 16px;   /* sheets, modals, feature cards */
+  --r-full: 999px;
+
+  /* elevation = border first, shadow second (dark UI reads borders better) */
+  --el-1: 0 0 0 1px var(--border);
+  --el-2: 0 0 0 1px var(--border), 0 4px 16px rgba(0,0,0,.35);
+  --el-3: 0 0 0 1px var(--border-strong), 0 12px 40px rgba(0,0,0,.5);
+
+  --tap-min: 44px; /* minimum hit target */
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<style>body{margin:0;background:#08090A;color:var(--text);font:var(--text-body)}*{box-sizing:border-box}
+a{color:var(--text-2)}a:hover{color:var(--text)}</style>
+</helmet>
+
+<section style="padding:48px 56px 96px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="assets/icon.svg" style="width:28px;height:28px;border-radius:7px">
+    <span style="font:800 20px var(--font-display);letter-spacing:-.01em">Season Table v2</span>
+    <span style="font:var(--text-small);color:var(--text-3)">richer mobile controls · scoring explained pre-lock · hit/miss + consensus post-lock</span>
+  </div>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ============ PRE-LOCK mobile ============ -->
+    <div data-screen-label="Season v2 pre-lock" style="width:390px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="padding:18px 20px 12px;display:flex;flex-direction:column;gap:12px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:900 26px var(--font-display);letter-spacing:-.01em">FINAL TABLE</span>
+          <span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;background:var(--live-dim);border:1px solid var(--live)"><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--live)">LOCKS</span><span style="font:600 13px var(--font-num);font-variant-numeric:tabular-nums;color:var(--live)">4d 07:12</span></span>
+        </div>
+        <span style="font:var(--text-small);color:var(--text-2)">Drag all 20 into your predicted finish. Locks at the season's first kickoff — for good.</span>
+        <!-- scoring explainer -->
+        <div style="display:flex;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+          <span style="font:var(--text-small);color:var(--text-2)"><span style="color:var(--text);font-weight:600">How it scores:</span> each spot off costs its distance (Utd 4th → 12th = 8 drift). Lowest season total wins. Exact spots break ties.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px">↩ UNDO</span>
+          <span style="font:600 12px var(--font-display);color:var(--text-2);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px">FILL FROM CURRENT TABLE</span>
+          <span style="margin-left:auto;font:600 12px var(--font-num);color:var(--success)">✓ saved</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:8px;padding:9px 12px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span style="font:400 13px var(--font-body);color:var(--text-3)">Jump to team…</span>
+        </div>
+      </div>
+      <div style="padding:10px 14px 20px;display:flex;flex-direction:column;gap:4px">
+        <sc-for list="{{ preTeams }}" as="t" hint-placeholder-count="8">
+          <div style="display:flex;align-items:center;gap:10px;min-height:48px;padding:0 8px 0 4px;background:{{ t.bg }};border:1px solid {{ t.border }};border-radius:8px">
+            <span style="width:26px;text-align:center;font:700 15px var(--font-num);font-variant-numeric:tabular-nums;color:{{ t.posColor }}">{{ t.pos }}</span>
+            <span style="width:3px;height:26px;border-radius:2px;background:{{ t.zone }}"></span>
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 9px var(--font-display);color:var(--text-2);flex:none">{{ t.code }}</span>
+            <span style="flex:1;font:600 14px var(--font-body)">{{ t.name }}</span>
+            <span style="font:600 11px var(--font-num);color:var(--text-3)">{{ t.consensus }}</span>
+            <span style="display:inline-flex;flex-direction:column;gap:2px">
+              <span style="width:30px;height:21px;border:1px solid var(--border-strong);border-radius:5px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2)">▲</span>
+              <span style="width:30px;height:21px;border:1px solid var(--border-strong);border-radius:5px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font:700 10px var(--font-display);color:var(--text-2)">▼</span>
+            </span>
+            <span style="color:var(--text-3);font-size:15px;letter-spacing:2px;padding:0 6px;cursor:grab">⠿</span>
+          </div>
+        </sc-for>
+        <div style="display:flex;gap:14px;padding:12px 8px 0;flex-wrap:wrap">
+          <span style="display:flex;align-items:center;gap:6px;font:var(--text-small);color:var(--text-3)"><span style="width:8px;height:8px;border-radius:2px;background:var(--accent)"></span>title</span>
+          <span style="display:flex;align-items:center;gap:6px;font:var(--text-small);color:var(--text-3)"><span style="width:8px;height:8px;border-radius:2px;background:#5B8DEF"></span>UCL</span>
+          <span style="display:flex;align-items:center;gap:6px;font:var(--text-small);color:var(--text-3)"><span style="width:8px;height:8px;border-radius:2px;background:var(--danger)"></span>relegation</span>
+          <span style="font:var(--text-small);color:var(--text-3);margin-left:auto">grey number = league consensus spot</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ POST-LOCK mobile ============ -->
+    <div data-screen-label="Season v2 post-lock" style="width:390px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;display:flex;flex-direction:column">
+      <div style="background:radial-gradient(120% 100% at 50% 0%, #12150C 0%, var(--bg) 75%);padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font:900 26px var(--font-display);letter-spacing:-.01em">FINAL TABLE</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:6px;background:var(--locked-dim)"><svg width="9" height="11" viewBox="0 0 9 11"><path d="M1.5 5V3.5a3 3 0 016 0V5" stroke="var(--locked)" stroke-width="1.4" fill="none"></path><rect x="0.7" y="4.8" width="7.6" height="5.5" rx="1.2" fill="var(--locked)"></rect></svg><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--locked)">LOCKED · MW1</span></span>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:20px">
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 44px/1 var(--font-num);font-variant-numeric:tabular-nums">31</span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">TOTAL DRIFT</span></span>
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 26px/1 var(--font-num);color:var(--success)">6</span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">EXACT</span></span>
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 26px/1 var(--font-num)">#2<span style="font-size:13px;color:var(--success)"> ▲1</span></span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">TABLE RACE</span></span>
+        </div>
+        <span style="font:var(--text-small);color:var(--text-2)">If the season ended today · after MW8 · settles after MW38</span>
+      </div>
+      <!-- hit / miss / controversial strip -->
+      <div style="display:flex;border-bottom:1px solid var(--border)">
+        <div style="flex:1;padding:12px 14px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px">
+          <span style="font:600 10px var(--font-display);letter-spacing:.08em;color:var(--success)">BIGGEST HIT</span>
+          <span style="font:600 13px var(--font-body)">Villa 5th — exact</span>
+          <span style="font:var(--text-small);color:var(--text-3)">only you called it</span>
+        </div>
+        <div style="flex:1;padding:12px 14px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px">
+          <span style="font:600 10px var(--font-display);letter-spacing:.08em;color:var(--danger)">BIGGEST MISS</span>
+          <span style="font:600 13px var(--font-body)">Utd 4th → 12th</span>
+          <span style="font:var(--text-small);color:var(--text-3)">8 of your 31 drift</span>
+        </div>
+        <div style="flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:2px">
+          <span style="font:600 10px var(--font-display);letter-spacing:.08em;color:var(--warning)">HOT TAKE</span>
+          <span style="font:600 13px var(--font-body)">Spurs 6th</span>
+          <span style="font:var(--text-small);color:var(--text-3)">league had them 4th</span>
+        </div>
+      </div>
+      <div style="padding:10px 14px 24px;display:flex;flex-direction:column;gap:4px">
+        <sc-for list="{{ postTeams }}" as="t" hint-placeholder-count="8">
+          <div style="display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px 0 4px;border-bottom:1px solid var(--border)">
+            <span style="width:26px;text-align:center;font:700 14px var(--font-num);font-variant-numeric:tabular-nums;color:var(--text-2)">{{ t.pred }}</span>
+            <span style="width:26px;height:26px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 9px var(--font-display);color:var(--text-2);flex:none">{{ t.code }}</span>
+            <span style="flex:1;font:600 14px var(--font-body)">{{ t.name }}</span>
+            <span style="font:600 12px var(--font-num);font-variant-numeric:tabular-nums;color:var(--text-3)">now {{ t.now }}</span>
+            <span style="min-width:44px;text-align:center;font:600 13px var(--font-num);font-variant-numeric:tabular-nums;color:{{ t.diffColor }};background:{{ t.diffBg }};border-radius:6px;padding:5px 0">{{ t.diff }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- ============ DESKTOP ============ -->
+    <div data-screen-label="Season v2 desktop" style="width:900px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:28px 32px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <span style="font:900 24px var(--font-display);letter-spacing:-.01em">SEASON TABLE · POST-LOCK</span>
+        <span style="font:var(--text-small);color:var(--text-3)">list + drift analysis · consensus column</span>
+        <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:6px;background:var(--locked-dim)"><svg width="9" height="11" viewBox="0 0 9 11"><path d="M1.5 5V3.5a3 3 0 016 0V5" stroke="var(--locked)" stroke-width="1.4" fill="none"></path><rect x="0.7" y="4.8" width="7.6" height="5.5" rx="1.2" fill="var(--locked)"></rect></svg><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--locked)">LOCKED</span></span>
+      </div>
+      <div style="display:flex;gap:28px;align-items:flex-start">
+        <div style="flex:1.3;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">
+            <span style="width:30px">PRED</span><span style="flex:1">TEAM</span><span style="width:56px;text-align:right">LEAGUE</span><span style="width:40px;text-align:right">NOW</span><span style="width:52px;text-align:center">DRIFT</span>
+          </div>
+          <sc-for list="{{ postTeams }}" as="t" hint-placeholder-count="10">
+            <div style="display:flex;align-items:center;gap:10px;min-height:40px;padding:0 12px;border-top:1px solid var(--border)">
+              <span style="width:30px;font:600 13px var(--font-num);font-variant-numeric:tabular-nums;color:var(--text-2)">{{ t.pred }}</span>
+              <span style="width:24px;height:24px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);display:inline-flex;align-items:center;justify-content:center;font:700 8px var(--font-display);color:var(--text-2);flex:none">{{ t.code }}</span>
+              <span style="flex:1;font:600 13px var(--font-body)">{{ t.name }}</span>
+              <span style="width:56px;text-align:right;font:600 12px var(--font-num);color:var(--text-3)">{{ t.consensus }}</span>
+              <span style="width:40px;text-align:right;font:600 13px var(--font-num);font-variant-numeric:tabular-nums;color:var(--text-3)">{{ t.now }}</span>
+              <span style="width:52px;text-align:center;font:600 13px var(--font-num);font-variant-numeric:tabular-nums;color:{{ t.diffColor }};background:{{ t.diffBg }};border-radius:6px;padding:4px 0">{{ t.diff }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;gap:20px">
+            <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 40px/1 var(--font-num);font-variant-numeric:tabular-nums">31</span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">Σ |DIFF|</span></span>
+            <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 40px/1 var(--font-num);font-variant-numeric:tabular-nums">143</span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">Σ DIFF²</span></span>
+            <span style="display:flex;flex-direction:column;gap:2px"><span style="font:700 40px/1 var(--font-num);color:var(--success)">6</span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">EXACT</span></span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--border);padding-top:14px">
+            <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-2)">DERIVED CALLS</span>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:400 13px var(--font-body);color:var(--text-2);flex:1">Champion — Arsenal</span><span style="font:600 12px var(--font-num);color:var(--success)">holding ✓</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:400 13px var(--font-body);color:var(--text-2);flex:1">Top 4 hits</span><span style="font:600 12px var(--font-num);color:var(--success)">3 of 4</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:400 13px var(--font-body);color:var(--text-2);flex:1">Relegation hits</span><span style="font:600 12px var(--font-num);color:var(--warning)">1 of 3</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--border);padding-top:14px">
+            <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-2)">PER-TEAM DRIFT</span>
+            <div style="display:flex;gap:3px;align-items:flex-end;height:48px">
+              <sc-for list="{{ heat }}" as="h" hint-placeholder-count="20">
+                <div style="flex:1;height:{{ h.hpx }};background:{{ h.color }};border-radius:2px" title="{{ h.code }}"></div>
+              </sc-for>
+            </div>
+            <span style="font:var(--text-small);color:var(--text-3)">one bar per team, predicted order · green = exact · red ≥5 off</span>
+          </div>
+          <div style="border:1px dashed var(--border-strong);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:4px">
+            <span style="font:600 13px var(--font-body)">vs the league</span>
+            <span style="font:var(--text-small);color:var(--text-2)">Your Spurs 6th is the room's most controversial call — consensus 4th. Priya leads the race on Σ 27.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const zone = (p) => p === 1 ? 'var(--accent)' : p <= 4 ? '#5B8DEF' : p >= 18 ? 'var(--danger)' : 'transparent';
+    const consensusMap = { ARS:1, MCI:2, LIV:3, CHE:5, NEW:6, TOT:4, AVL:8, MUN:7, BHA:9, CRY:10, WHU:12, BOU:13, FUL:11, EVE:15, BRE:14, NFO:16, WOL:18, LEE:17, BUR:19, SUN:20 };
+    const pre = [
+      ['ARS','Arsenal'],['MCI','Man City'],['LIV','Liverpool'],['CHE','Chelsea'],['NEW','Newcastle'],
+      ['TOT','Spurs'],['AVL','Aston Villa'],['MUN','Man Utd'],['BHA','Brighton'],['CRY','Crystal Palace'],
+      ['WHU','West Ham'],['BOU','Bournemouth'],['FUL','Fulham'],['EVE','Everton'],['BRE','Brentford'],
+      ['NFO','Forest'],['WOL','Wolves'],['LEE','Leeds'],['BUR','Burnley'],['SUN','Sunderland'],
+    ].map(([code, name], i) => ({
+      pos: i + 1, code, name, zone: zone(i + 1), consensus: '·' + consensusMap[code],
+      bg: 'var(--surface)', border: 'var(--border)',
+      posColor: i < 4 || i > 16 ? 'var(--text)' : 'var(--text-2)',
+    }));
+    const actual = { ARS:1, MCI:3, LIV:2, CHE:6, NEW:4, TOT:8, AVL:5, MUN:12, BHA:7, CRY:9, WHU:15, BOU:10, FUL:11, EVE:14, BRE:13, NFO:16, WOL:19, LEE:17, BUR:18, SUN:20 };
+    const post = pre.map(t => {
+      const now = actual[t.code], d = now - t.pos, a = Math.abs(d);
+      return { ...t, pred: t.pos, now,
+        diff: d === 0 ? '=' : (d > 0 ? '−' : '+') + a,
+        diffColor: d === 0 ? 'var(--success)' : a >= 5 ? 'var(--danger)' : 'var(--text-2)',
+        diffBg: d === 0 ? 'var(--success-dim)' : a >= 5 ? 'var(--danger-dim)' : 'var(--surface-2)' };
+    });
+    const heat = post.map(t => {
+      const a = Math.abs(t.now - t.pred);
+      return { code: t.code, hpx: Math.max(4, a * 5.5) + 'px',
+        color: a === 0 ? 'var(--success)' : a >= 5 ? 'var(--danger)' : 'var(--text-3)' };
+    });
+    return { preTeams: pre, postTeams: post, heat };
+  }
+}
+</script>
+</body>
+</html>

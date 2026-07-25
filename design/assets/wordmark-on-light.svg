@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="44" viewBox="0 0 293 44">
+  <path transform="translate(0,2)" fill-rule="evenodd" fill="#141518" d="M0,40 V0 h8.5 L15,13 21.5,0 H30 v40 h-8 V15 l-5,10 h-4 l-5,-10 v25 Z"></path>
+  <path transform="translate(36,2)" fill-rule="evenodd" fill="#141518" d="M11,0 h8 l11,40 h-8.4 l-2,-7.6 H10.4 l-2,7.6 H0 Z M15,10.5 l3.4,14.4 h-6.8 Z"></path>
+  <path transform="translate(72,2)" fill-rule="evenodd" fill="#141518" d="M0,0 h26 v8 h-9 v32 h-8 V8 H0 Z"></path>
+  <path transform="translate(104,2)" fill-rule="evenodd" fill="#141518" d="M0,0 h28 v9 H8 v22 h20 v9 H0 Z"></path>
+  <path transform="translate(138,2)" fill-rule="evenodd" fill="#141518" d="M0,0 h8 v16 h12 V0 h8 v40 h-8 V24.5 H8 V40 H0 Z"></path>
+  <rect x="174" y="8" width="13" height="12" rx="3" fill="#8BB80E"></rect>
+  <rect x="174" y="24" width="13" height="12" rx="3" fill="#E5382A"></rect>
+  <path transform="translate(195,2)" fill-rule="evenodd" fill="#141518" d="M0,0 h17 c7,0 11,4 11,11 v18 c0,7 -4,11 -11,11 H0 Z M8,8.5 h8.5 c2.3,0 3.5,1.2 3.5,3.5 v16 c0,2.3 -1.2,3.5 -3.5,3.5 H8 Z"></path>
+  <path transform="translate(229,2)" fill-rule="evenodd" fill="#141518" d="M11,0 h8 l11,40 h-8.4 l-2,-7.6 H10.4 l-2,7.6 H0 Z M15,10.5 l3.4,14.4 h-6.8 Z"></path>
+  <path transform="translate(265,2)" fill-rule="evenodd" fill="#141518" d="M0,0 h9.2 L14,13 18.8,0 H28 L18,25 v15 h-8 V25 Z"></path>
+  </svg>

@@ -1,0 +1,5 @@
+{
+  "// note": "Root config exists for editor tooling only. `pnpm typecheck` runs tsc per workspace package.",
+  "files": [],
+  "include": []
+}

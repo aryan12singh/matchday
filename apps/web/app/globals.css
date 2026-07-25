@@ -1,0 +1,83 @@
+/* MatchDay global stylesheet.
+ *
+ * Token files under app/styles/tokens/ are copied verbatim from the design bundle
+ * (design/tokens/) and are design-owned — never hand-edit them, re-copy instead.
+ * design/styles.css is reproduced by the three token imports below.
+ *
+ * Rule: components never hardcode hex. Use Tailwind token classes (bg-surface,
+ * text-accent, …) or the CSS custom properties directly. scripts/repo-check.ts fails
+ * the build on raw hex in app/ or components/.
+ */
+@import 'tailwindcss';
+
+@import './styles/tokens/typography.css';
+@import './styles/tokens/colors.css';
+@import './styles/tokens/spacing.css';
+
+@config '../tailwind.config.js';
+
+/* Fonts are self-hosted through next/font (see app/fonts.ts) rather than the design
+ * bundle's remote @import: it avoids a render-blocking third-party request and keeps
+ * the PWA working offline. next/font exposes each family as a CSS variable, which we
+ * map onto the design bundle's own font tokens so every --text-* token keeps working
+ * unchanged. */
+:root {
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-body: var(--font-public-sans), system-ui, sans-serif;
+  --font-num: var(--font-chivo-mono), ui-monospace, monospace;
+}
+
+/* `dark:` in the design bundle's theme is wired to [data-theme="light"] — dark is
+ * :root, light is the variant. `light:` reads the way it behaves; prefer it. */
+@custom-variant light ([data-theme='light'] &);
+
+@layer base {
+  html {
+    background: var(--bg);
+    color-scheme: dark;
+  }
+
+  [data-theme='light'] {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: var(--text-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Every digit in this product is tabular Chivo Mono. */
+  .font-num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Reduced motion is a brand rule, not a nicety: pulses become static dots and
+   * count-ups render their final value. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Uppercase display label — Archivo 700/11px, .12em tracking (design README §4). */
+  .label {
+    font: var(--text-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+}

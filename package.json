@@ -1,0 +1,31 @@
+{
+  "name": "matchday",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @matchday/web dev",
+    "build": "pnpm --filter @matchday/web build",
+    "start": "pnpm --filter @matchday/web start",
+    "lint": "eslint .",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "repo:check": "tsx scripts/repo-check.ts",
+    "check": "pnpm repo:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@next/eslint-plugin-next": "^15.5.21",
+    "@types/node": "^22.19.4",
+    "eslint": "^9.39.2",
+    "globals": "^17.7.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vitest": "^3.2.4"
+  }
+}

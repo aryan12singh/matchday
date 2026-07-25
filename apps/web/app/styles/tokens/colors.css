@@ -1,0 +1,74 @@
+/* MatchDay color tokens — "Dual Signal" (2d). Dark is the DEFAULT theme. */
+:root {
+  /* base — dark */
+  --bg: #0B0C0D;
+  --surface: #151619;
+  --surface-2: #1C1D21;
+  --surface-3: #232429;
+  --border: #25262B;
+  --border-strong: #33343B;
+  --text: #F3F4F2;
+  --text-2: #A8AAB0;
+  --text-3: #65666C;
+
+  /* the two voices */
+  --accent: #CBFF3A;            /* volt — YOU: your actions, picks, CTAs */
+  --on-accent: #0B0C0D;
+  --accent-dim: rgba(203,255,58,.10);
+  --live: #FF4E3E;              /* coral — THE GAME: live state, in-play */
+  --on-live: #FFFFFF;
+  --live-dim: rgba(255,78,62,.12);
+
+  /* semantic */
+  --success: #57D9A3;           /* points won / correct */
+  --success-dim: rgba(87,217,163,.12);
+  --danger: #FF5C6E;            /* points lost / wrong / destructive */
+  --danger-dim: rgba(255,92,110,.12);
+  --warning: #FFB224;           /* pending, needs attention */
+  --warning-dim: rgba(255,178,36,.12);
+  --locked: #8A8C94;            /* locked at kickoff */
+  --locked-dim: rgba(138,140,148,.12);
+  --void: #55565C;              /* voided / postponed */
+
+  /* money (hideable per league) */
+  --prize: #E9C46A;
+  --prize-dim: rgba(233,196,106,.12);
+
+  /* misc */
+  --focus-ring: rgba(203,255,58,.55);
+  --overlay: rgba(0,0,0,.6);
+  --skeleton: #1C1D21;
+  --skeleton-shine: #26272d;
+}
+[data-theme="light"] {
+  --bg: #F5F5F3;
+  --surface: #FFFFFF;
+  --surface-2: #EEEEEA;
+  --surface-3: #E4E4DF;
+  --border: #E0E1DC;
+  --border-strong: #C9CAC4;
+  --text: #141518;
+  --text-2: #565860;
+  --text-3: #8B8D94;
+  --accent: #A4D912;            /* volt tuned for light surfaces (fills only) */
+  --on-accent: #131503;
+  --accent-dim: rgba(139,184,14,.14);
+  --live: #E5382A;
+  --on-live: #FFFFFF;
+  --live-dim: rgba(229,56,42,.10);
+  --success: #0E9D68;
+  --success-dim: rgba(14,157,104,.12);
+  --danger: #DC3A4E;
+  --danger-dim: rgba(220,58,78,.10);
+  --warning: #B97900;
+  --warning-dim: rgba(185,121,0,.12);
+  --locked: #6E7076;
+  --locked-dim: rgba(110,112,118,.12);
+  --void: #9B9CA1;
+  --prize: #9C7A1E;
+  --prize-dim: rgba(156,122,30,.12);
+  --focus-ring: rgba(122,163,10,.55);
+  --overlay: rgba(20,21,24,.45);
+  --skeleton: #E9E9E5;
+  --skeleton-shine: #f2f2ee;
+}

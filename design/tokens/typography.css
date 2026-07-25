@@ -1,0 +1,24 @@
+/* MatchDay typography tokens.
+   Display/UI: Archivo · Numbers: Chivo Mono (ALWAYS tabular-nums) · Body: Public Sans */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Chivo+Mono:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap');
+:root {
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-body: 'Public Sans', system-ui, sans-serif;
+  --font-num: 'Chivo Mono', ui-monospace, monospace;
+
+  --text-broadcast: 900 64px/0.95 var(--font-display); /* full-bleed hero titles */
+  --text-num-mega: 700 72px/1 var(--font-num);          /* signature scorelines, hero countdowns */
+  --text-hero: 800 40px/1.05 var(--font-display);      /* big scores, countdowns pair w/ font-num */
+  --text-h1: 800 28px/1.1 var(--font-display);
+  --text-h2: 800 20px/1.2 var(--font-display);
+  --text-h3: 700 16px/1.3 var(--font-display);
+  --text-body: 400 14px/1.5 var(--font-body);
+  --text-body-strong: 600 14px/1.5 var(--font-body);
+  --text-small: 400 12.5px/1.5 var(--font-body);       /* metadata floor — nothing smaller than 12 */
+  --text-label: 700 11px/1 var(--font-display);        /* + letter-spacing .12em, uppercase */
+  --text-num-hero: 700 40px/1 var(--font-num);
+  --text-num-lg: 700 24px/1 var(--font-num);
+  --text-num: 600 14px/1 var(--font-num);
+  --text-num-sm: 600 12px/1 var(--font-num);
+  --tracking-label: .12em;
+}

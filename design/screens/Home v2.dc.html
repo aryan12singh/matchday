@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<style>body{margin:0;background:#08090A;color:var(--text);font:var(--text-body)}*{box-sizing:border-box}
+a{color:var(--text-2)}a:hover{color:var(--text)}
+@keyframes mdpulse{0%,100%{opacity:1}50%{opacity:.35}}.md-pulse{animation:mdpulse 1.6s infinite}</style>
+</helmet>
+
+<section style="padding:48px 56px 96px;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="assets/icon.svg" style="width:28px;height:28px;border-radius:7px">
+    <span style="font:800 20px var(--font-display);letter-spacing:-.01em">Home v2 — adaptive matchweek hub</span>
+    <span style="font:var(--text-small);color:var(--text-3)">full-bleed hero changes with phase · cards only where interactive · 4 hero states below</span>
+  </div>
+
+  <div style="display:flex;gap:48px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- ================= MOBILE 390 · pre-deadline ================= -->
+    <div data-screen-label="Home v2 mobile" style="width:390px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:28px;overflow:hidden;display:flex;flex-direction:column;min-height:844px">
+      <!-- full-bleed hero: no card -->
+      <div style="background:radial-gradient(120% 90% at 20% 0%, #12150C 0%, var(--bg) 65%);padding:18px 20px 24px;display:flex;flex-direction:column;gap:18px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <img src="assets/wordmark.svg" style="height:15px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="display:inline-flex;align-items:center;gap:6px;font:600 13px var(--font-display);color:var(--text-2);background:rgba(255,255,255,.04);padding:8px 12px;border-radius:6px">The Boot Room <span style="color:var(--text-3)">▾</span></span>
+            <span style="width:34px;height:34px;border-radius:50%;background:var(--surface-3);display:inline-flex;align-items:center;justify-content:center;font:700 12px var(--font-display);color:var(--accent)">AR</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px">
+          <!-- score-light motif -->
+          <div style="display:flex;flex-direction:column;gap:5px;padding-top:10px">
+            <span style="width:8px;height:22px;border-radius:3px;background:var(--accent)"></span>
+            <span style="width:8px;height:22px;border-radius:3px;background:var(--live);opacity:.35"></span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font:900 34px/1 var(--font-display);letter-spacing:-.02em">MATCHWEEK 9</span>
+            <span style="font:var(--text-body);color:var(--text-2)">First kickoff Sat 12:30 — Newcastle v Chelsea locks first</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span style="font:700 56px/1 var(--font-num);letter-spacing:-.03em;font-variant-numeric:tabular-nums">1<span style="font-size:28px;color:var(--text-3)">d</span> 14:32<span style="font-size:28px;color:var(--text-3)">:08</span></span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:4px">
+            <div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--accent)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--surface-3)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--surface-3)"></div><div style="flex:1;height:6px;border-radius:3px;background:var(--surface-3)"></div>
+          </div>
+          <span style="font:var(--text-small);color:var(--text-2)">7 of 10 predicted · saved automatically, editable until each kickoff</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent);font:800 15px var(--font-display);letter-spacing:.02em;border-radius:10px;min-height:48px">PREDICT REMAINING 3 →</div>
+      </div>
+
+      <div style="padding:20px 20px 12px;display:flex;flex-direction:column;gap:22px;flex:1">
+        <!-- live: borderless, red rail -->
+        <div style="display:flex;gap:14px">
+          <span style="width:3px;border-radius:2px;background:var(--live);flex:none"></span>
+          <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="md-pulse" style="width:7px;height:7px;border-radius:50%;background:var(--live)"></span>
+              <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--live)">LIVE · 64′</span>
+              <span style="margin-left:auto;font:600 13px var(--font-num);color:var(--success)">Projected +6</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px">
+              <span style="flex:1;text-align:right;font:700 15px var(--font-display)">Arsenal</span>
+              <span style="font:700 30px var(--font-num);font-variant-numeric:tabular-nums;letter-spacing:-.02em">2:1</span>
+              <span style="flex:1;font:700 15px var(--font-display)">Spurs</span>
+            </div>
+            <span style="font:var(--text-small);color:var(--text-2)">Your exact score is still alive · one Spurs goal breaks it →</span>
+          </div>
+        </div>
+
+        <!-- rank: open section, big numeral -->
+        <div style="display:flex;align-items:center;gap:16px;border-top:1px solid var(--border);padding-top:18px">
+          <span style="font:700 44px/1 var(--font-num);font-variant-numeric:tabular-nums">3<span style="font-size:18px;color:var(--text-3)">/7</span></span>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+            <span style="font:var(--text-body-strong)">The Boot Room <span style="color:var(--success);font-family:var(--font-num);font-size:13px">▲2 this week</span></span>
+            <span style="font:var(--text-small);color:var(--text-2)">12 pts off Dan above · 11 clear of Jamie below</span>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:6px;background:var(--prize-dim)"><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--prize)">POT</span><span style="font:600 12px var(--font-num);color:var(--prize)">£120</span></span>
+        </div>
+
+        <!-- recent results: borderless rows -->
+        <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--border);padding-top:14px">
+          <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-bottom:6px">LAST TIME OUT</span>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span style="font:600 13px var(--font-num);color:var(--text-2);width:96px">LIV 3:0 BOU</span>
+            <span style="flex:1;font:var(--text-small);color:var(--text-2)">Exact score. Take a bow.</span>
+            <span style="font:600 13px var(--font-num);color:var(--success)">+9</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+            <span style="font:600 13px var(--font-num);color:var(--text-2);width:96px">CHE 1:1 NEW</span>
+            <span style="flex:1;font:var(--text-small);color:var(--text-2)">Right idea, wrong score</span>
+            <span style="font:600 13px var(--font-num);color:var(--success)">+2</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px 0">
+            <span style="font:600 13px var(--font-num);color:var(--text-2);width:96px">MCI 0:2 AVL</span>
+            <span style="flex:1;font:var(--text-small);color:var(--text-2)">You backed City. Ouch.</span>
+            <span style="font:600 13px var(--font-num);color:var(--text-3)">0</span>
+          </div>
+        </div>
+
+        <!-- recap: editorial strip (interactive → card) -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <span style="display:flex;flex-direction:column;gap:2px;flex:1">
+            <span style="font:700 14px var(--font-display)">MW8 recap is in</span>
+            <span style="font:var(--text-small);color:var(--text-2)">Dan took the week · Priya's 3:0 was the call of the round</span>
+          </span>
+          <span style="font:700 12px var(--font-display);color:var(--accent)">READ →</span>
+        </div>
+      </div>
+
+      <!-- tab bar -->
+      <div style="display:flex;border-top:1px solid var(--border);background:var(--surface);padding:8px 8px 20px">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"></path></svg><span style="font:600 10px var(--font-display);color:var(--accent)">Home</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"></path></svg><span style="font:600 10px var(--font-display);color:var(--text-3)">Predict</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;justify-content:center;position:relative"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg><span style="font:600 10px var(--font-display);color:var(--text-3)">Live</span><span class="md-pulse" style="position:absolute;top:6px;right:26%;width:6px;height:6px;border-radius:50%;background:var(--live)"></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><path d="M8 21V10M12 21V3M16 21v-7"></path></svg><span style="font:600 10px var(--font-display);color:var(--text-3)">League</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:44px;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg><span style="font:600 10px var(--font-display);color:var(--text-3)">More</span></div>
+      </div>
+    </div>
+
+    <!-- ================= DESKTOP · live phase ================= -->
+    <div data-screen-label="Home v2 desktop" style="width:1180px;flex:none;background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;min-height:780px">
+      <div style="width:216px;flex:none;border-right:1px solid var(--border);padding:20px 12px;display:flex;flex-direction:column;gap:4px">
+        <img src="assets/wordmark.svg" style="height:14px;align-self:flex-start;margin:2px 10px 20px">
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;background:var(--accent-dim);color:var(--accent);font:700 13px var(--font-display)">Home</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--text-2);font:600 13px var(--font-display)">Predict <span style="margin-left:auto;font:600 12px var(--font-num);color:var(--warning)">3</span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--text-2);font:600 13px var(--font-display)">Live <span class="md-pulse" style="margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--live)"></span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--text-2);font:600 13px var(--font-display)">Table</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--text-2);font:600 13px var(--font-display)">League</div>
+        <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font:600 12px var(--font-display);color:var(--text-2)">The Boot Room <span style="margin-left:auto;color:var(--text-3)">▾</span></div>
+          <div style="display:flex;align-items:center;gap:8px;padding:0 4px;font:var(--text-small);color:var(--text-3)"><span style="border:1px solid var(--border);border-radius:4px;padding:2px 5px;font:600 11px var(--font-num)">⌘K</span> command palette</div>
+        </div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column">
+        <!-- live hero band: full-bleed -->
+        <div style="background:radial-gradient(90% 130% at 50% 0%, #170D0C 0%, var(--bg) 70%);border-bottom:1px solid var(--border);padding:30px 40px 28px;display:flex;align-items:center;gap:40px">
+          <div style="display:flex;flex-direction:column;gap:8px;width:210px">
+            <span style="display:inline-flex;align-items:center;gap:7px"><span class="md-pulse" style="width:8px;height:8px;border-radius:50%;background:var(--live)"></span><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--live)">LIVE · 64′ · EMIRATES</span></span>
+            <span style="font:var(--text-small);color:var(--text-2)">MW9 · your key pick is holding</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:26px;margin:0 auto">
+            <span style="font:800 24px var(--font-display);letter-spacing:-.01em">Arsenal</span>
+            <span style="font:700 72px/1 var(--font-num);letter-spacing:-.04em;font-variant-numeric:tabular-nums">2:1</span>
+            <span style="font:800 24px var(--font-display);letter-spacing:-.01em">Spurs</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:210px;align-items:flex-end">
+            <span style="font:600 16px var(--font-num);color:var(--success)">Projected +6 · not final</span>
+            <span style="font:var(--text-small);color:var(--text-2)">holds → you jump Dan into #2</span>
+            <span style="font:700 12px var(--font-display);color:var(--accent)">OPEN MATCH CENTRE →</span>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;gap:36px;padding:26px 40px;align-items:flex-start">
+          <div style="flex:1.5;display:flex;flex-direction:column;gap:22px">
+            <div style="display:flex;align-items:center;gap:18px">
+              <div style="display:flex;flex-direction:column;gap:2px;flex:1">
+                <span style="font:800 18px var(--font-display)">MW9 locks in <span style="font:700 18px var(--font-num);font-variant-numeric:tabular-nums">1d 14:32</span></span>
+                <span style="font:var(--text-small);color:var(--text-2)">3 fixtures unpredicted — Brighton, Wolves, Fulham</span>
+              </div>
+              <span style="display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent);font:800 13px var(--font-display);border-radius:10px;min-height:44px;padding:0 20px">PREDICT REMAINING 3 →</span>
+            </div>
+            <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+              <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding:14px 0 6px">TODAY</span>
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 0;border-bottom:1px solid var(--border)"><span style="font:600 13px var(--font-num);color:var(--text-2);width:70px">FT</span><span style="width:190px;font:700 14px var(--font-display)">Liverpool 3:0 Bournemouth</span><span style="flex:1;font:var(--text-small);color:var(--text-2)">exact score ✓</span><span style="font:600 13px var(--font-num);color:var(--success)">+9</span></div>
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 0;border-bottom:1px solid var(--border)"><span style="display:flex;align-items:center;gap:6px;width:70px"><span class="md-pulse" style="width:6px;height:6px;border-radius:50%;background:var(--live)"></span><span style="font:600 13px var(--font-num);color:var(--live)">64′</span></span><span style="width:190px;font:700 14px var(--font-display)">Arsenal 2:1 Spurs</span><span style="flex:1;font:var(--text-small);color:var(--text-2)">exact still alive · Saka first ✓</span><span style="font:600 13px var(--font-num);color:var(--success)">+6</span></div>
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 0"><span style="font:600 13px var(--font-num);color:var(--text-2);width:70px">17:30</span><span style="width:190px;font:700 14px var(--font-display)">Everton — Fulham</span><span style="flex:1;font:var(--text-small);color:var(--text-2)">your pick 0:2 · locks in 3h</span><span style="font:600 13px var(--font-num);color:var(--text-3)">—</span></div>
+            </div>
+          </div>
+          <div style="flex:1;max-width:340px;display:flex;flex-direction:column;gap:20px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <span style="font:700 40px/1 var(--font-num);font-variant-numeric:tabular-nums">3<span style="font-size:16px;color:var(--text-3)">/7</span></span>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                <span style="font:var(--text-body-strong)">The Boot Room <span style="color:var(--success);font-family:var(--font-num);font-size:13px">▲2</span></span>
+                <span style="font:var(--text-small);color:var(--text-2)">12 off Dan · 11 clear of Jamie</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;border-top:1px solid var(--border)">
+              <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding:14px 0 6px">THE ROOM</span>
+              <div style="display:flex;gap:10px;align-items:baseline;padding:7px 0"><span style="font:600 12px var(--font-num);color:var(--text-3);width:30px">now</span><span style="font:var(--text-small);color:var(--text-2)"><span style="color:var(--text)">Priya</span> is +3 on this match — 2:0 Saka</span></div>
+              <div style="display:flex;gap:10px;align-items:baseline;padding:7px 0"><span style="font:600 12px var(--font-num);color:var(--text-3);width:30px">2h</span><span style="font:var(--text-small);color:var(--text-2)"><span style="color:var(--text)">MW8 recap</span> — Dan took the week</span></div>
+              <div style="display:flex;gap:10px;align-items:baseline;padding:7px 0"><span style="font:600 12px var(--font-num);color:var(--text-3);width:30px">5h</span><span style="font:var(--text-small);color:var(--text-2)"><span style="color:var(--text)">Jamie</span> finished his MW9 picks</span></div>
+            </div>
+            <div style="border:1px dashed var(--border-strong);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px">
+              <span style="font:var(--text-small);color:var(--text-2)">2 of 7 haven't predicted MW9</span>
+              <span style="margin-left:auto;font:700 12px var(--font-display);color:var(--text-2);border:1px solid var(--border-strong);border-radius:6px;padding:8px 12px">NUDGE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 4 adaptive hero states ================= -->
+    <div style="width:390px;display:flex;flex-direction:column;gap:14px">
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">ADAPTIVE HERO — FOUR PHASES</span>
+      <div style="background:radial-gradient(120% 100% at 20% 0%, #12150C 0%, var(--bg) 70%);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">PRE-DEADLINE</span>
+        <span style="font:900 22px var(--font-display);letter-spacing:-.01em">3 picks left</span>
+        <span style="font:700 26px var(--font-num);font-variant-numeric:tabular-nums">1d 14:32</span>
+        <span style="display:inline-flex;align-self:flex-start;align-items:center;background:var(--accent);color:var(--on-accent);font:800 12px var(--font-display);border-radius:8px;padding:9px 14px">PREDICT REMAINING 3 →</span>
+      </div>
+      <div style="background:radial-gradient(120% 100% at 50% 0%, #170D0C 0%, var(--bg) 70%);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+        <span style="display:inline-flex;align-items:center;gap:6px"><span class="md-pulse" style="width:6px;height:6px;border-radius:50%;background:var(--live)"></span><span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--live)">LIVE</span></span>
+        <span style="font:700 34px var(--font-num);font-variant-numeric:tabular-nums;letter-spacing:-.02em">ARS 2:1 TOT <span style="font-size:15px;color:var(--text-3)">64′</span></span>
+        <span style="font:var(--text-small);color:var(--text-2)">Projected +6 · holds → you're #2 · exact score at risk from one Spurs goal</span>
+      </div>
+      <div style="background:radial-gradient(120% 100% at 80% 0%, #0D140F 0%, var(--bg) 70%);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--success)">MATCHWEEK SETTLED</span>
+        <span style="font:900 22px var(--font-display)">+24 pts · your best week</span>
+        <span style="font:var(--text-small);color:var(--text-2)">Best call: Liverpool 3:0 exact · now #3, ▲2</span>
+        <span style="display:inline-flex;align-self:flex-start;align-items:center;border:1px solid var(--border-strong);color:var(--text);font:800 12px var(--font-display);border-radius:8px;padding:9px 14px">REVIEW MATCHWEEK →</span>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:8px">
+        <span style="font:600 10px var(--font-display);letter-spacing:.1em;color:var(--text-3)">QUIET WEEK — INTERNATIONAL BREAK</span>
+        <span style="font:900 22px var(--font-display)">MW10 opens Thursday</span>
+        <span style="font:var(--text-small);color:var(--text-2)">Table race: you're #2, 4 drift off Priya · Dan is 2 wins from the season record</span>
+        <span style="font:700 12px var(--font-display);color:var(--accent)">COMPARE WITH YOUR RIVAL →</span>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

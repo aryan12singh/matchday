@@ -1,0 +1,3 @@
+Baseline migration lands in Task 2 (docs/discovery/09-database-schema.md + addendum §D).
+Migrations are additive and forward-only; never edit one that has been applied.
+Filenames must match ^\d{14}_.+\.sql$ — scripts/repo-check.ts enforces it.

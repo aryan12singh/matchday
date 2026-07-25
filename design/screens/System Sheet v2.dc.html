@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="styles.css">
+<style>body{margin:0;background:#08090A;color:var(--text);font:var(--text-body)}*{box-sizing:border-box}
+a{color:var(--text-2)}a:hover{color:var(--text)}
+@keyframes mdpulse{0%,100%{opacity:1}50%{opacity:.35}}.md-pulse{animation:mdpulse 1.6s infinite}</style>
+</helmet>
+
+<section style="padding:48px 56px 96px;display:flex;flex-direction:column;gap:32px;max-width:1240px">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="assets/icon.svg" style="width:28px;height:28px;border-radius:7px">
+    <span style="font:800 20px var(--font-display);letter-spacing:-.01em">System Sheet v2 — Premium Broadcast</span>
+    <span style="font:var(--text-small);color:var(--text-3)">what changed from v1 · surface hierarchy · type scale · brand devices · celebration scale</span>
+  </div>
+
+  <div style="display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start">
+
+    <!-- brand devices -->
+    <div style="width:560px;display:flex;flex-direction:column;gap:14px">
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">BRAND · MATCH:DAY</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:20px">
+        <img src="assets/wordmark.svg" style="height:36px;align-self:flex-start">
+        <span style="font:var(--text-small);color:var(--text-2)">The colon is the brand. It recurs as four devices — never as decoration, always as meaning:</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+            <span style="display:flex;flex-direction:column;gap:4px"><span style="width:7px;height:18px;border-radius:2.5px;background:var(--accent)"></span><span style="width:7px;height:18px;border-radius:2.5px;background:var(--live)"></span></span>
+            <span style="display:flex;flex-direction:column;gap:1px"><span style="font:700 13px var(--font-display)">Score lights</span><span style="font:var(--text-small);color:var(--text-3)">section markers on heroes</span></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+            <span style="font:700 26px var(--font-num);letter-spacing:-.03em;font-variant-numeric:tabular-nums">2:1</span>
+            <span style="display:flex;flex-direction:column;gap:1px"><span style="font:700 13px var(--font-display)">Scoreboard type</span><span style="font:var(--text-small);color:var(--text-3)">oversized Chivo Mono scores</span></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+            <span style="display:flex;gap:3px"><span style="width:9px;height:6px;border-radius:2px;background:var(--accent)"></span><span style="width:9px;height:6px;border-radius:2px;background:var(--accent)"></span><span style="width:9px;height:6px;border-radius:2px;background:var(--accent)"></span><span style="width:9px;height:6px;border-radius:2px;background:var(--surface-3)"></span><span style="width:9px;height:6px;border-radius:2px;background:var(--surface-3)"></span></span>
+            <span style="display:flex;flex-direction:column;gap:1px"><span style="font:700 13px var(--font-display)">Progress blocks</span><span style="font:var(--text-small);color:var(--text-3)">MW completion, form dots</span></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+            <span style="width:3px;height:30px;border-radius:2px;background:var(--live)"></span>
+            <span style="display:flex;flex-direction:column;gap:1px"><span style="font:700 13px var(--font-display)">Status rails</span><span style="font:var(--text-small);color:var(--text-3)">3px left edge = state voice</span></span>
+          </div>
+        </div>
+      </div>
+
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-top:8px">SURFACE HIERARCHY — CARDS EARN THEIR BORDER</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--text-3)">page</span><span style="flex:1;height:34px;border-radius:8px;background:var(--bg)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">open sections + 1px dividers</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--text-3)">hero band</span><span style="flex:1;height:34px;border-radius:8px;background:radial-gradient(120% 200% at 30% 0%,#12150C 0%,var(--bg) 75%)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">full-bleed radial tint, phase-colored</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--text-3)">interactive</span><span style="flex:1;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">card = tappable/stateful only</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--text-3)">hover/selected</span><span style="flex:1;height:34px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border-strong)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">one step lighter</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--live)">live</span><span style="flex:1;height:34px;border-radius:8px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--live)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">coral rail + pulsing dot</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--warning)">warning</span><span style="flex:1;height:34px;border-radius:8px;background:var(--warning-dim);border:1px solid var(--warning)"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">stale data, pending</span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="width:120px;font:600 12px var(--font-num);color:var(--text-3)">disabled/void</span><span style="flex:1;height:34px;border-radius:8px;background:var(--surface);border:1px dashed var(--border-strong);opacity:.55"></span><span style="font:var(--text-small);color:var(--text-2);width:210px">dashed + 55% · never red</span></div>
+      </div>
+
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-top:8px">ACCESSIBILITY GUARANTEES</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;gap:8px;font:var(--text-small);color:var(--text-2)">
+        <span>· State ≠ color alone: live adds pulse+rail+label, locked adds padlock, void adds dash, win/loss adds ✓/✕ and +/−.</span>
+        <span>· Text floors: body 14, secondary 13, metadata 12.5 · targets ≥44px · focus ring var(--focus-ring) 2px offset.</span>
+        <span>· prefers-reduced-motion: pulses become static dots, count-ups render final value.</span>
+        <span>· Long names truncate with title tooltip; missing crest → monogram chip (already the default).</span>
+      </div>
+    </div>
+
+    <!-- type scale + celebration -->
+    <div style="width:560px;display:flex;flex-direction:column;gap:14px">
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3)">BROADCAST TYPE SCALE</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font:700 72px/1 var(--font-num);letter-spacing:-.05em;font-variant-numeric:tabular-nums">2:1</span><span style="font:var(--text-small);color:var(--text-3)">num-mega 72–84 · scoreboards, hero countdown</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font:700 44px/1 var(--font-num);font-variant-numeric:tabular-nums">3<span style="font-size:18px;color:var(--text-3)">/7</span></span><span style="font:var(--text-small);color:var(--text-3)">num-hero 40–56 · ranks, projected points, drift</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font:900 30px var(--font-display);letter-spacing:-.01em">MATCHWEEK 9</span><span style="font:var(--text-small);color:var(--text-3)">broadcast 26–34 · screen titles, Archivo 900 caps</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font:600 14px var(--font-body)">Your exact score is still alive</span><span style="font:var(--text-small);color:var(--text-3)">body 14–16 · raised from v1's 12–13 greys</span></div>
+        <div style="display:flex;align-items:baseline;gap:16px"><span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-2)">SECTION LABEL</span><span style="font:var(--text-small);color:var(--text-3)">11/.12em · non-essential metadata only</span></div>
+      </div>
+
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-top:8px">V1 → V2 · WHAT CHANGED</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="width:88px;font:700 11px var(--font-display);color:var(--success);flex:none">UNCHANGED</span><span style="font:var(--text-small);color:var(--text-2)">tokens &amp; semantics (volt=you, coral=the game) · nav · steppers · fixture states · empty/failure states · money gating</span></div>
+        <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)"><span style="width:88px;font:700 11px var(--font-display);color:var(--warning);flex:none">REFINED</span><span style="font:var(--text-small);color:var(--text-2)">cards → open sections + rails · type scale up 2 sizes everywhere · "Projected, not final" language · "Included in The Boot Room" labels · per-fixture lock times · autosave copy</span></div>
+        <div style="display:flex;gap:12px;padding:8px 0"><span style="width:88px;font:700 11px var(--font-display);color:var(--live);flex:none">NEW</span><span style="font:var(--text-small);color:var(--text-2)">adaptive home hero (4 phases) · alive/at-risk/dead category tracker · podium + rival strips · form dots · League Home clubhouse · Recap + share card · celebration scale · league custom accent</span></div>
+      </div>
+
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-top:8px">COMPONENT SPECIMENS · V2 ADDITIONS</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:18px">
+        <!-- alive tracker row -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--success)"></span>
+          <span style="flex:1;font:600 14px var(--font-body)">Exact score 2:1 — still alive</span>
+          <span style="font:600 14px var(--font-num);color:var(--success)">+3</span>
+          <span style="font:var(--text-small);color:var(--text-3);width:120px">category tracker</span>
+        </div>
+        <!-- called it -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font:600 14px var(--font-body)">Saka opens it · 1:0</span>
+          <span style="color:var(--accent);font:700 11px var(--font-display);background:var(--accent-dim);padding:4px 8px;border-radius:5px">CALLED IT</span>
+          <span style="margin-left:auto;font:var(--text-small);color:var(--text-3);width:120px">confirmed-pick badge</span>
+        </div>
+        <!-- form dots -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="display:flex;gap:4px"><span style="width:14px;height:8px;border-radius:2px;background:var(--success)"></span><span style="width:14px;height:8px;border-radius:2px;background:var(--success)"></span><span style="width:14px;height:8px;border-radius:2px;background:var(--danger)"></span><span style="width:14px;height:8px;border-radius:2px;background:var(--text-3)"></span><span style="width:14px;height:8px;border-radius:2px;background:var(--success)"></span></span>
+          <span style="font:var(--text-small);color:var(--text-2)">form vs league median · last 5</span>
+          <span style="margin-left:auto;font:var(--text-small);color:var(--text-3);width:120px">leaderboard rows</span>
+        </div>
+        <!-- rivalry -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="font:700 18px var(--font-num)">329</span><span style="font:600 11px var(--font-num);color:var(--danger)">−12</span><span style="font:700 18px var(--font-num);color:var(--text-2)">341</span>
+          <span style="font:var(--text-small);color:var(--text-2)">rivalry strip</span>
+          <span style="margin-left:auto;font:var(--text-small);color:var(--text-3);width:120px">league home</span>
+        </div>
+        <!-- consequence -->
+        <div style="display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 14px">
+          <span style="font:var(--text-small);color:var(--text-2)">If it stays 2:1 → <span style="color:var(--text);font-weight:600">you jump Dan into #2</span></span>
+          <span style="margin-left:auto;font:var(--text-small);color:var(--text-3);width:108px">consequence strip</span>
+        </div>
+      </div>
+
+      <span style="font:var(--text-label);letter-spacing:var(--tracking-label);color:var(--text-3);padding-top:8px">DIRECTION — CHOSEN &amp; BLENDED</span>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;gap:8px;font:var(--text-small);color:var(--text-2)">
+        <span><span style="color:var(--text);font-weight:700">A · Premium Broadcast — primary.</span> Hero bands, oversized scoreboards, score-light motif, live intensity.</span>
+        <span><span style="color:var(--text);font-weight:600">B · Social Clubhouse — adopted</span> in League Home, Recap, rivalries, reactions, podium.</span>
+        <span><span style="color:var(--text);font-weight:600">C · Tactical Minimal — adopted</span> in Predict &amp; Leaderboard density, borderless rows, Linear-grade desktop spacing.</span>
+      </div>
+    </div>
+  </div>
+</section>
+</x-dc>
+</body>
+</html>
