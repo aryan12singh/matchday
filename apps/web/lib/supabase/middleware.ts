@@ -1,10 +1,18 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-import type { Database } from '../database.types';
+import type { Database } from '@matchday/domain';
 
 /** Routes reachable without a session. Everything else redirects to /login. */
-const PUBLIC_PREFIXES = ['/login', '/auth', '/join', '/legal', '/install', '/offline'];
+const PUBLIC_PREFIXES = ['/login', '/auth', '/legal', '/install', '/offline'];
+
+/**
+ * API routes never redirect. They authenticate themselves — job routes with a bearer
+ * CRON_SECRET, everything else with the session — and answer with a status code. A 307 to
+ * /login in response to `pg_cron` would silently disable the entire scheduler, which is
+ * exactly what happened before this existed.
+ */
+const isApi = (pathname: string) => pathname.startsWith('/api/');
 
 const isPublic = (pathname: string) =>
   pathname === '/' || PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -49,7 +57,7 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (!user && !isPublic(pathname)) {
+  if (!user && !isPublic(pathname) && !isApi(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     // Come back here after signing in.

@@ -14,6 +14,7 @@
   "dependencies": {
     "@matchday/domain": "workspace:*",
     "@matchday/provider": "workspace:*",
-    "@matchday/scoring": "workspace:*"
+    "@matchday/scoring": "workspace:*",
+    "@supabase/supabase-js": "^2.110.8"
   }
 }

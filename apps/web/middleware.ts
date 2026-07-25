@@ -9,9 +9,9 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Everything except static assets and image files. Job routes are deliberately
-     * included: they authenticate with a bearer CRON_SECRET rather than a session, and
-     * running them through here costs one session lookup that always misses.
+     * Everything except static assets and image files. API routes pass through the
+     * matcher but are exempted from the redirect inside updateSession — they authenticate
+     * themselves and must answer with a status code, never a 307 to /login.
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|webmanifest)$).*)',
   ],

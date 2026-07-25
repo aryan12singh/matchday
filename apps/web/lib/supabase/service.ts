@@ -2,7 +2,7 @@ import 'server-only';
 
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
-import type { Database } from '../database.types';
+import type { Database } from '@matchday/domain';
 
 /**
  * Service-role client. Bypasses RLS entirely.

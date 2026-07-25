@@ -1,6 +1,6 @@
 import { createBrowserClient } from '@supabase/ssr';
 
-import type { Database } from '../database.types';
+import type { Database } from '@matchday/domain';
 
 /**
  * Browser Supabase client. Anon key only — every read it performs is filtered by the RLS

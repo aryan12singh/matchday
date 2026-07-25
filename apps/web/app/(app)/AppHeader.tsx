@@ -21,6 +21,22 @@ export function AppHeader({
           <Image src="/wordmark.svg" alt="MatchDay" width={132} height={22} priority />
         </Link>
 
+        <nav aria-label="Main" className="flex items-center gap-1">
+          {[
+            { href: '/predict', label: 'Predict' },
+            { href: '/table', label: 'Table' },
+            { href: '/leagues', label: 'Leagues' },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex min-h-tap items-center rounded-md px-3 font-display text-[11px] font-bold uppercase tracking-label text-text-2 hover:bg-surface-2 hover:text-text"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-2 text-[13px] text-text-2">
             {avatarUrl ? (

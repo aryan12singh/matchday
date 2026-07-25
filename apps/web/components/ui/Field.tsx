@@ -10,9 +10,11 @@ export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   /** Shown under the field and linked with aria-describedby. */
   error?: string | null;
   hint?: string;
+  /** Extra input classes — token classes only, never raw colour. */
+  inputClassName?: string;
 }
 
-export function Field({ label, error, hint, id, ...props }: FieldProps) {
+export function Field({ label, error, hint, id, inputClassName = '', ...props }: FieldProps) {
   const inputId = id ?? props.name ?? label.toLowerCase().replace(/\s+/g, '-');
   const errorId = `${inputId}-error`;
   const hintId = `${inputId}-hint`;
@@ -32,6 +34,7 @@ export function Field({ label, error, hint, id, ...props }: FieldProps) {
           // State is never colour alone: an invalid field also gets aria-invalid and a
           // text message below.
           error ? 'outline outline-1 outline-danger' : '',
+          inputClassName,
         ].join(' ')}
         {...props}
       />

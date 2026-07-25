@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-import type { Database } from '../database.types';
+import type { Database } from '@matchday/domain';
 
 /**
  * Server-side Supabase client carrying the request's session cookies, so RLS evaluates
