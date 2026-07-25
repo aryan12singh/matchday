@@ -21,6 +21,11 @@ next-env.d.ts
 supabase/.branches/
 supabase/.temp/
 
+# Local agent instructions — owner's working notes, deliberately not versioned.
+# The rules it describes are enforced by scripts/repo-check.ts and eslint.config.mjs,
+# which are in the repo; see README.md and docs/discovery/ for the architecture itself.
+CLAUDE.md
+
 # Tooling
 coverage/
 .vercel/

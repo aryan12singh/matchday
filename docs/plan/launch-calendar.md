@@ -16,17 +16,29 @@ with one day of it left. That is **~5 days lost against a 5-week plan**, absorbe
 - moving four items to post-launch (below).
 
 Deliberately *not* compressed: T2 (schema), T12 (lock enforcement tests), T14 (settlement).
-Those carry the CLAUDE.md invariants, and a defect there is unrecoverable once real
+Those carry the project invariants, and a defect there is unrecoverable once real
 predictions are locked against real money.
+
+## Dependency correction: T15 moves ahead of T21
+
+Addendum §G scheduled T21 (league fixture selection & voting) in week 3 and T15
+(leagues + membership) in week 4, but **T21 depends on T15**: votes and selections are
+keyed to `league_seasons`, and the vote RLS policy is "members of the league may
+insert/delete their own votes while the round is unfinalized" — there is no membership to
+check until T15 exists. T15 itself depends only on T3 (auth), so it is cheap to pull
+forward, and doing so also unblocks T16 and T17.
+
+T15 therefore moves to week 2R and T21 stays in week 3R, after it. This also rebalances
+the shortened week 4R from four items to three.
 
 ## Weeks
 
 | Week | Dates | Tasks | Exit condition |
 |---|---|---|---|
-| **1R** | Sat 25 Jul – Fri 31 Jul | T1 scaffold + CI + design system, T2 baseline schema incl. addendum §D delta, T4 domain, T3 auth/profiles, T5 scoring port · T6 provider spike runs in parallel from day 1 | Preview deploys; migrations apply clean; lock + immutability triggers raise in psql; scoring golden vectors green |
-| **2R** | Sat 1 Aug – Fri 7 Aug | T7 adapter + normalizers, T8 jobs core, T9 season bootstrap (real PL 26/27), T12 prediction API + lock/RLS integration tests | Local DB shows 380 fixtures, 20 teams, MW rounds, markets with correct `locks_at`; security tests green in CI |
-| **3R** | Sat 8 Aug – Fri 14 Aug | T10 tick scheduler + live/final jobs, T13 MW predict screen, T14 settlement + score runs, T21 selection & voting | Simulated matchweek end to end: predict → lock → result → components → diff rows on correction |
-| **4R** | Sat 15 Aug – Tue 18 Aug | T15 leagues/membership, T16-lite (bind `rule_sets` v1, no weight-editor UI), T17 leaderboards + Table race tab, T22 season table predictor + Golden Boot entry | All six §G non-negotiables present and exercised by two real accounts |
+| **1R** | Sat 25 Jul – Fri 31 Jul | ~~T1 scaffold + CI + design system~~ ✅, T2 baseline schema incl. addendum §D delta, T4 domain, T3 auth/profiles, T5 scoring port · T6 provider spike runs in parallel from day 1 | Preview deploys; migrations apply clean; lock + immutability triggers raise in psql; scoring golden vectors green |
+| **2R** | Sat 1 Aug – Fri 7 Aug | T7 adapter + normalizers, T8 jobs core, T9 season bootstrap (real PL 26/27), T12 prediction API + lock/RLS integration tests, **T15 leagues/membership** | Local DB shows 380 fixtures, 20 teams, MW rounds, markets with correct `locks_at`; security tests green in CI; two-user join flow works |
+| **3R** | Sat 8 Aug – Fri 14 Aug | T10 tick scheduler + live/final jobs, T14 settlement + score runs, T13 MW predict screen, T21 selection & voting | Simulated matchweek end to end: predict → lock → result → components → diff rows on correction |
+| **4R** | Sat 15 Aug – Tue 18 Aug | T16-lite (bind `rule_sets` v1, no weight-editor UI), T17 leaderboards + Table race tab, T22 season table predictor + Golden Boot entry | All six §G non-negotiables present and exercised by two real accounts |
 | **Freeze** | Wed 19 Aug – Fri 21 Aug | No new features. Seed real league(s), preseason drill against a live fixture on the provider, security checklist §10.4 items 1–4 and 6, Supabase Free→Pro, API-Football Free→Pro | Live before Friday's kickoff |
 
 ## Moved to post-launch
@@ -55,6 +67,13 @@ window) · settlement · MW + overall + Table race boards.
 ## Cut order if slipping
 
 recap/feed → H2H → live-centre polish → push notifications (email reminders ship first).
+
+## Working rhythm
+
+One branch per task (`task/NN-short-name`), pushed for the owner to review and merge.
+Nothing is committed to `main` directly. After each task: `pnpm check` green, acceptance
+criteria restated and confirmed one by one, UI state checklist shown for any screen work,
+then stop for review.
 
 ## Owner actions on the critical path
 
