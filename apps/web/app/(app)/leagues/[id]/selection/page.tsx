@@ -90,6 +90,7 @@ export default async function SelectionPage({
         isOrganizer={league.role === 'organizer'}
         mode={league.selectionMode === 'vote' ? 'vote' : 'admin_pick'}
         finalized={fixtures.some((f) => f.selected)}
+        memberCount={league.memberCount}
       />
     </main>
   );

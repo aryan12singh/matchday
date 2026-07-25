@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import type { PredictFixture } from '../../lib/predictions';
 import { CountdownChip } from './CountdownChip';
+import { CountsBadge } from './CountsBadge';
 import { ScoreStepper } from './ScoreStepper';
 import { StateBadge } from './StateBadge';
 import { TeamChip } from './TeamChip';
@@ -58,22 +59,15 @@ export function FixtureCard({
     <article
       className={`flex flex-col gap-3 rounded-md bg-surface px-4 py-4 shadow-el-1 ${RAIL[state]}`}
     >
-      <header className="flex items-center justify-between gap-3">
-        <span className="font-num text-[12px] tabular-nums text-text-2">
-          {formatKickoff(fixture.kickoffAt)}
+      <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <span className="flex items-baseline gap-2">
+          <span className="font-num text-[12px] tabular-nums text-text-2">
+            {formatKickoff(fixture.kickoffAt)}
+          </span>
+          <CountsBadge countsIn={fixture.countsIn} />
         </span>
 
         <span className="flex items-center gap-2">
-          {fixture.countsIn.length > 0 ? (
-            <span className="label text-text-3" title={fixture.countsIn.join(', ')}>
-              In {fixture.countsIn.length === 1 ? fixture.countsIn[0] : `${fixture.countsIn.length} leagues`}
-            </span>
-          ) : (
-            // Explicit, not silent: a fixture nobody counts is still predictable "just
-            // for fun" and the user should know which it is (addendum §B).
-            <span className="label text-text-3">Not selected</span>
-          )}
-
           {state === 'editable' ? (
             <CountdownChip target={fixture.kickoffAt} />
           ) : (

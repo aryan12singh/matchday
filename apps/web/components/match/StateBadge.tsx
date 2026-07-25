@@ -34,7 +34,7 @@ export function StateBadge({ state, children }: { state: BadgeState; children?: 
       className={`inline-flex items-center gap-1.5 rounded-sm px-2 py-1 font-display text-[11px] font-bold uppercase tracking-label ${STYLES[state]}`}
     >
       {state === 'live' ? (
-        <span aria-hidden="true" className="size-1.5 animate-pulse rounded-full bg-live" />
+        <span aria-hidden="true" className="live-dot size-1.5 rounded-full bg-live" />
       ) : null}
       {state === 'locked' ? (
         <svg aria-hidden="true" viewBox="0 0 12 12" className="size-3 fill-current">

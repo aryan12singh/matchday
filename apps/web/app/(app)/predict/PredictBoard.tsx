@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState, useTransition } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 
 import { AdvancedMarkets } from '../../../components/match/AdvancedMarkets';
 import { FixtureCard, type SaveState } from '../../../components/match/FixtureCard';
@@ -87,6 +87,8 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
     [persist],
   );
 
+  const visibleRef = useRef<PredictFixture[]>([]);
+
   const visible = useMemo(() => {
     switch (filter) {
       case 'incomplete':
@@ -98,8 +100,84 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
     }
   }, [fixtures, filter]);
 
+  // Kept in a ref so the key handler always sees the current list without re-binding the
+  // listener on every keystroke.
+  visibleRef.current = visible;
+
   const remaining = fixtures.filter((f) => !f.complete && f.editable).length;
   const predicted = fixtures.filter((f) => f.complete).length;
+
+  // Desktop keyboard entry (design/README.md, Interactions). Entering ten fixtures with a
+  // mouse is ten trips to a pair of small buttons; with the keyboard it is one pass.
+  // Deliberately does not hijack Tab — the browser's focus order is already correct, and
+  // stealing it would break the screen for anyone navigating by keyboard out of necessity
+  // rather than preference.
+  const [focused, setFocused] = useState(0);
+  // The focus ring is meaningless until someone presses a key; showing it on a phone is
+  // just an unexplained volt outline around the first card.
+  const [keyboardActive, setKeyboardActive] = useState(false);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      // Never while the user is typing into an advanced-market input.
+      const target = event.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      const editable = visibleRef.current.filter((f) => f.editable);
+      if (editable.length === 0) return;
+
+      if (['j', 'k', 'ArrowDown', 'ArrowUp', '+', '=', '-', '_', '[', ']'].includes(event.key)) {
+        setKeyboardActive(true);
+      }
+
+      const index = Math.min(focused, editable.length - 1);
+      const fixture = editable[index];
+      if (!fixture) return;
+
+      const bump = (side: 'home' | 'away', delta: 1 | -1) => {
+        event.preventDefault();
+        const score = fixture.prediction.score ?? { home: 0, away: 0 };
+        const next = Math.max(0, Math.min(99, score[side] + delta));
+        update(fixture.id, (f) => ({
+          ...f,
+          complete: true,
+          prediction: { ...f.prediction, score: { ...score, [side]: next } },
+        }));
+      };
+
+      switch (event.key) {
+        case 'j':
+        case 'ArrowDown':
+          event.preventDefault();
+          setFocused((i) => Math.min(editable.length - 1, i + 1));
+          break;
+        case 'k':
+        case 'ArrowUp':
+          event.preventDefault();
+          setFocused((i) => Math.max(0, i - 1));
+          break;
+        // Home goals on the left pair, away on the right — mirrors the card layout.
+        case '+':
+        case '=':
+          bump('home', 1);
+          break;
+        case '-':
+        case '_':
+          bump('home', -1);
+          break;
+        case ']':
+          bump('away', 1);
+          break;
+        case '[':
+          bump('away', -1);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [focused, update]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -123,6 +201,12 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
         ))}
       </div>
 
+      <p className="hidden text-[12.5px] text-text-3 sm:block">
+        Keyboard: <kbd className="font-num">j</kbd>/<kbd className="font-num">k</kbd> move ·{' '}
+        <kbd className="font-num">+</kbd>/<kbd className="font-num">−</kbd> home goals ·{' '}
+        <kbd className="font-num">[</kbd>/<kbd className="font-num">]</kbd> away goals
+      </p>
+
       {visible.length === 0 ? (
         <EmptyState
           title={
@@ -141,7 +225,18 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
       ) : (
         <ul className="flex flex-col gap-3">
           {visible.map((fixture) => (
-            <li key={fixture.id}>
+            <li
+              key={fixture.id}
+              // A focus ring on the whole card, so the keyboard user can see which fixture
+              // the +/− keys will hit.
+              className={
+                keyboardActive &&
+                fixture.editable &&
+                visible.filter((f) => f.editable).indexOf(fixture) === focused
+                  ? 'rounded-md outline outline-2 outline-offset-2 outline-[var(--focus-ring)]'
+                  : ''
+              }
+            >
               <FixtureCard
                 fixture={fixture}
                 saveState={saveStates[fixture.id]}

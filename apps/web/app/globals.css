@@ -80,4 +80,106 @@
     text-transform: uppercase;
     color: var(--text-2);
   }
+
+  /* ---------------------------------------------------------------------
+   * Motion.
+   *
+   * design/README.md is specific about restraint here: the live pulse is a
+   * 1.6s opacity keyframe on the DOT only, never a whole card, and the
+   * celebration scale is graded — ordinary points get nothing, an exact score
+   * gets a pulse, and only a perfect week gets confetti. Everything below is
+   * disabled by the prefers-reduced-motion block above.
+   * ------------------------------------------------------------------ */
+
+  @keyframes live-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  /* The one live affordance. On the dot, at 1.6s, and nowhere else. */
+  .live-dot {
+    animation: live-dot 1.6s ease-in-out infinite;
+  }
+
+  /* Skeletons sweep rather than blink — a blinking block reads as an error. */
+  @keyframes skeleton-sweep {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton) 25%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-sweep 1.4s linear infinite;
+  }
+
+  /* Exact score. One pulse, then done — a looping celebration is a nag. */
+  @keyframes called-it {
+    0% {
+      transform: scale(1);
+    }
+    35% {
+      transform: scale(1.06);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .called-it {
+    animation: called-it 0.5s ease-out 1;
+  }
+
+  /* Projected points becoming final at full time. */
+  @keyframes settle-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .settle-in {
+    animation: settle-in 0.35s ease-out 1;
+  }
+
+  /* Full-bleed hero bands (design/README.md, Surface hierarchy). Radial tint per
+   * phase — volt for pre-deadline, live for in-play, gold for a win, green for
+   * settled. */
+  .hero-band {
+    background: radial-gradient(120% 100% at 50% 0%, var(--hero-tint, transparent), var(--bg) 70%);
+  }
+}
+
+@layer utilities {
+  /* Reduced motion: pulses become static dots and count-ups render their final
+   * value. The global duration override handles the animation itself; this stops
+   * a mid-animation transform from being left applied. */
+  @media (prefers-reduced-motion: reduce) {
+    .called-it,
+    .settle-in,
+    .live-dot,
+    .skeleton {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
+  }
 }

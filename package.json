@@ -21,7 +21,8 @@
     "check": "pnpm repo:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "db:types": "supabase gen types typescript --local --schema public > packages/domain/src/database.types.ts",
     "db:seed:dev": "tsx scripts/seed-dev-season.ts",
-    "drill": "tsx scripts/matchday-drill.ts"
+    "drill": "tsx scripts/matchday-drill.ts",
+    "ui:smoke": "tsx scripts/ui-smoke.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -33,6 +34,7 @@
     "@types/node": "^22.19.4",
     "eslint": "^9.39.2",
     "globals": "^17.7.0",
+    "playwright": "^1.62.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4",

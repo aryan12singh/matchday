@@ -29,6 +29,7 @@ pnpm dev                     # http://localhost:3000
 | `pnpm db:types` | Regenerate `packages/domain/src/database.types.ts` after a migration |
 | `pnpm db:seed:dev` | Fake 20-team, 3-matchweek season so the app is usable without the provider |
 | `pnpm drill` | Full matchday drill: predict → lock → settle → leaderboard → correction |
+| `pnpm ui:smoke` | Drives a real browser through every page; writes `.screenshots/` |
 
 ## Layout
 
