@@ -108,6 +108,9 @@ importers:
       '@matchday/scoring':
         specifier: workspace:*
         version: link:../scoring
+      '@supabase/supabase-js':
+        specifier: ^2.110.8
+        version: 2.110.8
 
   packages/notify:
     dependencies:

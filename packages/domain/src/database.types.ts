@@ -2235,6 +2235,7 @@ export type Database = {
         }[]
       }
       regenerate_join_code: { Args: { p_league_id: string }; Returns: string }
+      release_advisory_lock: { Args: { p_key: number }; Returns: boolean }
       save_fixture_prediction: {
         Args: {
           p_away: number
@@ -2261,6 +2262,7 @@ export type Database = {
         Args: { p_order: string[]; p_season_id: string }
         Returns: string
       }
+      try_advisory_lock: { Args: { p_key: number }; Returns: boolean }
       update_league_season_settings: {
         Args: {
           p_fixtures_per_round?: number

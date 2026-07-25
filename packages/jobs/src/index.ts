@@ -1,15 +1,14 @@
 /**
- * @matchday/jobs — job implementations, tick controller, advisory locks, sync runs,
- * quota ledger and circuit breaker.
+ * @matchday/jobs — job implementations, locks, sync-run bookkeeping, quota ledger and
+ * the settlement engine.
  *
- * Built in Task 8; individual sync jobs land in Tasks 9 and 10.
- *
- * This is the only package permitted to import @matchday/provider.
+ * The only package permitted to import @matchday/provider (invariant 1). Everything with
+ * IO lives here or in the route handlers that call it; @matchday/scoring stays pure.
  */
 
-import { DOMAIN_PACKAGE } from '@matchday/domain';
-import { PROVIDER_PACKAGE } from '@matchday/provider';
-
-export const JOBS_DEPENDS_ON = [DOMAIN_PACKAGE, PROVIDER_PACKAGE] as const;
+export * from './locks';
+export * from './quota';
+export * from './sync-runs';
+export * from './settlement';
 
 export const JOBS_PACKAGE = '@matchday/jobs' as const;

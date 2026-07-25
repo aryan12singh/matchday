@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-import type { Database } from '../database.types';
+import type { Database } from '@matchday/domain';
 
 /** Routes reachable without a session. Everything else redirects to /login. */
 const PUBLIC_PREFIXES = ['/login', '/auth', '/join', '/legal', '/install', '/offline'];
