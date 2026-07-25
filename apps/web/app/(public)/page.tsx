@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
+
+import { Wordmark } from '../../components/ui/Wordmark';
 
 export const metadata: Metadata = { title: 'MatchDay' };
 
@@ -15,7 +16,7 @@ export default function LandingPage() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-10 px-4 py-16">
       <div className="flex flex-col gap-4">
-        <Image src="/wordmark.svg" alt="MatchDay" width={200} height={34} priority />
+        <Wordmark width={200} height={34} priority />
         <h1 className="font-display text-[28px] font-extrabold leading-tight">
           Predict the season with your mates.
         </h1>

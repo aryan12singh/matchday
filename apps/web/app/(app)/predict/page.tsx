@@ -17,11 +17,11 @@ export default async function PredictPage({
   await requireUser('/predict');
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8">
       <Suspense fallback={<MatchweekSkeleton />}>
         <MatchweekSection searchParams={searchParams} />
       </Suspense>
-    </main>
+    </div>
   );
 }
 

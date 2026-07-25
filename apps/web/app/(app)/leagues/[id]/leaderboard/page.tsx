@@ -51,7 +51,7 @@ export default async function LeaderboardPage({
     : { data: null };
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-col gap-1">
         <p className="label">{league.name}</p>
         <h1 className="font-display text-[28px] font-extrabold leading-tight">Leaderboard</h1>
@@ -92,7 +92,7 @@ export default async function LeaderboardPage({
           hasPrizes={league.prizeSchemeId != null}
         />
       )}
-    </main>
+    </div>
   );
 }
 

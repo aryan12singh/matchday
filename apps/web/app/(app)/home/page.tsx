@@ -21,10 +21,10 @@ export default async function HomePage() {
   const [state, leagues] = await Promise.all([getHomeState(user.id), getMyLeagues(user.id)]);
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-8 px-4 py-6">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-6">
       <Hero state={state} />
 
-      <section className="flex flex-col gap-3">
+      <section className="flex flex-col gap-3 lg:max-w-2xl">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="label">Your leagues</h2>
           <Link
@@ -85,6 +85,6 @@ export default async function HomePage() {
           </ul>
         )}
       </section>
-    </main>
+    </div>
   );
 }

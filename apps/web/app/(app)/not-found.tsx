@@ -9,7 +9,7 @@ import Link from 'next/link';
  */
 export default function AppNotFound() {
   return (
-    <main className="mx-auto flex max-w-md flex-col items-start gap-5 px-4 py-16">
+    <div className="mx-auto flex max-w-md flex-col items-start gap-5 px-4 py-16">
       <div className="flex flex-col gap-2">
         <p className="label">Not found</p>
         <h1 className="font-display text-[28px] font-extrabold leading-tight">
@@ -35,6 +35,6 @@ export default function AppNotFound() {
           Join a league
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

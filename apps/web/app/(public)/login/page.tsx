@@ -1,5 +1,5 @@
+import { Wordmark } from '../../../components/ui/Wordmark';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 
 import { LoginForm } from './LoginForm';
 
@@ -17,7 +17,7 @@ export default async function LoginPage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center gap-8 px-4 py-12">
       <header className="flex flex-col gap-3">
-        <Image src="/wordmark.svg" alt="MatchDay" width={168} height={28} priority />
+        <Wordmark width={168} height={28} priority />
         <p className="text-text-2">
           Season-long predictions, settled properly, with the people who will not let you
           forget it.
