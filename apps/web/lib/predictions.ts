@@ -272,3 +272,35 @@ export async function getSquads(fixtureId: string) {
     teamId: row.team_id,
   }));
 }
+
+/**
+ * How many fixtures in the current round the user has not predicted.
+ *
+ * Drives the nav badge. Counts only *open* markets: a fixture that has already kicked off
+ * is not something they can still act on, and badging it would be nagging about something
+ * the database will refuse.
+ */
+export async function getUnpredictedCount(userId: string): Promise<number> {
+  const roundId = await getCurrentRoundId();
+  if (!roundId) return 0;
+
+  const supabase = await createClient();
+
+  const { data: markets } = await supabase
+    .from('markets')
+    .select('id, fixture_id, status, market_types!inner ( code ), fixtures!inner ( round_id )')
+    .eq('market_types.code', 'correct_score')
+    .eq('fixtures.round_id', roundId)
+    .eq('status', 'open');
+
+  const openMarketIds = (markets ?? []).map((m) => m.id);
+  if (openMarketIds.length === 0) return 0;
+
+  const { data: mine } = await supabase
+    .from('predictions')
+    .select('market_id')
+    .eq('user_id', userId)
+    .in('market_id', openMarketIds);
+
+  return openMarketIds.length - (mine ?? []).length;
+}

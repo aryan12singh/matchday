@@ -19,7 +19,7 @@ export default async function JoinPage({
   const preview = code ? await previewLeague(code) : null;
 
   return (
-    <main className="mx-auto flex max-w-md flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-8">
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-[28px] font-extrabold">Join a league</h1>
         {preview ? (
@@ -41,6 +41,6 @@ export default async function JoinPage({
       ) : null}
 
       <JoinForm defaultCode={code ?? ''} />
-    </main>
+    </div>
   );
 }

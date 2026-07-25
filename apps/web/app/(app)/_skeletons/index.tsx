@@ -18,13 +18,13 @@ export function PageSkeleton({
   children: React.ReactNode;
 }) {
   return (
-    <main
+    <div
       aria-busy="true"
       aria-label={label}
       className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8"
     >
       {children}
-    </main>
+    </div>
   );
 }
 

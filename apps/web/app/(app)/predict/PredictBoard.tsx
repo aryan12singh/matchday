@@ -223,7 +223,7 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
           }
         />
       ) : (
-        <ul className="flex flex-col gap-3">
+        <ul className="grid gap-3 xl:grid-cols-2">
           {visible.map((fixture) => (
             <li
               key={fixture.id}

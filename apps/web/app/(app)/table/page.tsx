@@ -26,13 +26,13 @@ export default async function SeasonTablePage() {
 
   if (!season) {
     return (
-      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
         <h1 className="font-display text-[28px] font-extrabold">Season table</h1>
         <EmptyState
           title="No season loaded yet."
           body="Once the season is imported you can rank all 20 teams here."
         />
-      </main>
+      </div>
     );
   }
 
@@ -75,7 +75,7 @@ export default async function SeasonTablePage() {
   const locked = tableMarket ? tableMarket.status !== 'open' : false;
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-col gap-2">
         <p className="label">
           {season.competitions?.name ?? 'Season'} {season.label}
@@ -111,6 +111,6 @@ export default async function SeasonTablePage() {
           />
         </section>
       ) : null}
-    </main>
+    </div>
   );
 }

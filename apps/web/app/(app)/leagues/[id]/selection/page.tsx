@@ -28,26 +28,26 @@ export default async function SelectionPage({
   // A league counting everything has nothing to decide.
   if (league.selectionMode === 'all') {
     return (
-      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
         <h1 className="font-display text-[28px] font-extrabold">Fixture selection</h1>
         <EmptyState
           title="Every fixture counts in this league."
           body="An organizer can switch to picking or voting in league settings."
         />
-      </main>
+      </div>
     );
   }
 
   const roundId = round ?? (await getCurrentRoundId());
   if (!roundId) {
     return (
-      <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
         <h1 className="font-display text-[28px] font-extrabold">Fixture selection</h1>
         <EmptyState
           title="No fixtures loaded yet."
           body="Voting opens once the season is imported and the round's fixtures are confirmed."
         />
-      </main>
+      </div>
     );
   }
 
@@ -74,7 +74,7 @@ export default async function SelectionPage({
   }));
 
   return (
-    <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-col gap-1">
         <p className="label">{league.name}</p>
         <h1 className="font-display text-[28px] font-extrabold leading-tight">
@@ -92,6 +92,6 @@ export default async function SelectionPage({
         finalized={fixtures.some((f) => f.selected)}
         memberCount={league.memberCount}
       />
-    </main>
+    </div>
   );
 }
