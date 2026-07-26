@@ -66,7 +66,12 @@ async function main() {
     { path: '/home', expect: /Matchweek|Quiet week|Nothing to predict|No fixtures/i, shot: 'home' },
     { path: '/predict', expect: /Matchweek|Predict|No fixtures/i, shot: 'predict' },
     { path: '/live', expect: /in play|What's on/i, shot: 'live' },
-    { path: '/table', expect: /Predict the table|Teams aren|No season/i, shot: 'table' },
+    { path: '/table', expect: /Table/i, shot: 'table' },
+    { path: '/season-picks', expect: /Predict the table|Teams aren|No season/i, shot: 'season-picks' },
+    { path: '/teams', expect: /Teams/i, shot: 'teams' },
+    { path: '/rules', expect: /How scoring works/i, shot: 'rules' },
+    { path: '/profile', expect: /Profile/i, shot: 'profile' },
+    { path: '/settings/notifications', expect: /Notifications/i, shot: 'notifications' },
     { path: '/leagues', expect: /Leagues/i, shot: 'leagues' },
     { path: '/leagues/new', expect: /New league/i, shot: 'leagues-new' },
     { path: '/join', expect: /Join a league/i, shot: 'join' },
@@ -105,6 +110,8 @@ async function main() {
     ['/leaderboard', 'leaderboard'],
     ['/selection', 'selection'],
     ['/recap', 'recap'],
+    ['/members', 'members'],
+    ['/admin', 'league-admin'],
   ] as const) {
     await page.goto(`${leagueUrl}${suffix}`, { waitUntil: 'networkidle' });
     const heading = await page.locator('h1').first().textContent();

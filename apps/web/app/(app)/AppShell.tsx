@@ -76,6 +76,7 @@ export function AppShell({
     },
     { href: '/live', label: 'Live', icon: <IconLive /> },
     { href: '/table', label: 'Table', icon: <IconTable /> },
+    { href: '/teams', label: 'Teams', icon: <IconTeams /> },
     { href: '/leagues', label: 'Leagues', icon: <IconLeagues /> },
   ];
 
@@ -134,10 +135,13 @@ export function AppShell({
 
         <div className="mt-auto flex flex-col gap-3">
           <ThemeToggle />
-          <div className="flex items-center gap-2 px-1">
+          <Link
+            href="/profile"
+            className="flex min-h-tap items-center gap-2 rounded-md px-1 hover:bg-surface-2"
+          >
             <Avatar username={username} avatarUrl={avatarUrl} />
             <span className="flex-1 truncate text-[13px] text-text-2">{username}</span>
-          </div>
+          </Link>
           <form action={signOut}>
             <button
               type="submit"
@@ -166,7 +170,9 @@ export function AppShell({
                 <IconSearch />
               </button>
               <ThemeToggle compact />
-              <Avatar username={username} avatarUrl={avatarUrl} />
+              <Link href="/profile" aria-label="Profile" className="flex min-h-tap items-center">
+                <Avatar username={username} avatarUrl={avatarUrl} />
+              </Link>
             </div>
           </div>
         </header>
@@ -182,7 +188,7 @@ export function AppShell({
           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
         >
           <ul className="flex">
-            {nav.map((item) => (
+            {nav.filter((item) => item.href !== '/teams').map((item) => (
               <li key={item.href} className="flex-1">
                 <Link
                   href={item.href}
@@ -260,6 +266,13 @@ const IconLeagues = () => (
   <svg viewBox="0 0 24 24" className={svg} aria-hidden="true">
     <path d="M6 4h12v5a6 6 0 1 1-12 0z" strokeLinejoin="round" />
     <path d="M9 21h6M12 15v6" strokeLinecap="round" />
+  </svg>
+);
+const IconTeams = () => (
+  <svg viewBox="0 0 24 24" className={svg} aria-hidden="true">
+    <circle cx="9" cy="8" r="3" />
+    <circle cx="17" cy="10" r="2.5" />
+    <path d="M3 19a6 6 0 0 1 12 0M15 19a5 5 0 0 1 6-4.6" strokeLinecap="round" />
   </svg>
 );
 const IconSearch = () => (

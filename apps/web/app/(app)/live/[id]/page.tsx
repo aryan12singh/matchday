@@ -111,6 +111,82 @@ export default async function LiveMatchPage({ params }: { params: Promise<{ id: 
         )}
       </section>
 
+      {!inPlay && !settled ? (
+        <section className="flex flex-col gap-4">
+          {match.form.length > 0 ? (
+            <div className="flex flex-col gap-2">
+              <h2 className="label">Going in</h2>
+              <ul className="flex flex-col divide-y divide-border">
+                {match.form.map((row) => (
+                  <li key={row.teamId} className="flex items-center gap-3 py-2">
+                    <span className="flex-1 truncate text-[14px]">
+                      {row.teamId === match.home.id ? match.home.name : match.away.name}
+                    </span>
+                    <span className="text-[12.5px] text-text-3">
+                      {row.position != null ? `${row.position} in the table` : 'unplaced'}
+                      {row.points != null ? ` · ${row.points} pts` : ''}
+                    </span>
+                    {row.form ? (
+                      <span className="font-num text-[12px] tracking-wide text-text-2">
+                        {row.form}
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {match.lineups.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1">
+                <h2 className="label">Lineups are in</h2>
+                <p className="text-[12.5px] text-text-3">
+                  Worth a look before kickoff if you picked a first scorer.
+                </p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {match.lineups.map((lineup) => (
+                  <div key={lineup.teamId} className="flex flex-col gap-2">
+                    <p className="text-[13px] font-bold">
+                      {lineup.teamId === match.home.id ? match.home.name : match.away.name}
+                      {lineup.formation ? (
+                        <span className="ml-2 font-num text-[12px] text-text-3">
+                          {lineup.formation}
+                        </span>
+                      ) : null}
+                    </p>
+                    <ul className="flex flex-col gap-0.5">
+                      {lineup.players
+                        .filter((player) => player.starter)
+                        .map((player, index) => (
+                          <li key={index} className="flex items-baseline gap-2 text-[13px]">
+                            <span className="w-6 font-num text-[12px] tabular-nums text-text-3">
+                              {player.number ?? ''}
+                            </span>
+                            <span className="truncate">{player.name}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="text-[13px] text-text-3">
+              Lineups are usually announced about an hour before kickoff.
+            </p>
+          )}
+
+          <Link
+            href="/predict"
+            className="inline-flex min-h-tap items-center justify-center self-start rounded-md bg-accent px-5 font-display text-[13px] font-extrabold uppercase tracking-label text-on-accent"
+          >
+            {match.prediction ? 'Change your pick →' : 'Predict this match →'}
+          </Link>
+        </section>
+      ) : null}
+
       <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,22rem)]">
         {/* ---------------- category tracker ---------------- */}
         <section className="flex flex-col gap-3">
