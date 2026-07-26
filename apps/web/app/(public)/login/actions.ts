@@ -68,18 +68,28 @@ export async function signUp(
   const supabase = await createClient();
   const username = formData.get('username');
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
       // handle_new_user reads this to seed profiles.username, falling back to the email
       // local part and de-duplicating with a counter.
       data: typeof username === 'string' && username.trim() ? { username: username.trim() } : {},
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/auth/callback?next=${encodeURIComponent(safeNext(parsed.data.next))}`,
     },
   });
 
   if (error) {
     return { error: error.message };
+  }
+
+  // Whether a session comes back depends on a project setting, not on anything here: with
+  // email confirmation required, signUp succeeds and returns a user with NO session.
+  // Redirecting regardless sent those people to /home, where middleware immediately
+  // bounced them back to /login — the form again, no error, nothing to act on. It reads
+  // as a silently broken sign-up, and it is the default configuration of a new project.
+  if (!data.session) {
+    return { notice: 'Check your email to confirm your account, then sign in.' };
   }
 
   revalidatePath('/', 'layout');
