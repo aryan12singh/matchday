@@ -22,7 +22,8 @@
     "db:types": "supabase gen types typescript --local --schema public > packages/domain/src/database.types.ts",
     "db:seed:dev": "tsx scripts/seed-dev-season.ts",
     "drill": "tsx scripts/matchday-drill.ts",
-    "ui:smoke": "tsx scripts/ui-smoke.ts"
+    "ui:smoke": "tsx scripts/ui-smoke.ts",
+    "dev:setup": "tsx scripts/dev-setup.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

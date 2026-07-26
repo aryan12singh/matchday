@@ -279,7 +279,7 @@ export async function getLiveCentre() {
        home:teams!fixtures_home_team_id_fkey ( name, code ),
        away:teams!fixtures_away_team_id_fkey ( name, code )`,
     )
-    .in('status', ['lineups', 'live', 'ht', 'finished'])
+    .in('status', ['lineups', 'live', 'ht', 'finished', 'settled'])
     .gte('kickoff_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
     .order('kickoff_at', { ascending: true });
 
@@ -314,7 +314,7 @@ export async function getLiveCentre() {
 
   return {
     live: all.filter((f) => f.status === 'live' || f.status === 'ht' || f.status === 'lineups'),
-    finished: all.filter((f) => f.status === 'finished'),
+    finished: all.filter((f) => f.status === 'finished' || f.status === 'settled'),
     upcoming: map(upcoming.data),
   };
 }
