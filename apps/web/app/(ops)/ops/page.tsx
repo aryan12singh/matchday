@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { getOpsHealth } from '../../../lib/ops';
 
+import { OpsActions } from './OpsActions';
+
 export const metadata: Metadata = { title: 'Ops' };
 
 // Health is only useful if it is current.
@@ -78,6 +80,8 @@ export default async function OpsPage() {
         <Stat label="Unsettled FT" value={health.counts.unsettledFinished} alert={health.counts.unsettledFinished > 0} />
         <Stat label="Stuck runs" value={health.stuckRuns} alert={health.stuckRuns > 0} />
       </section>
+
+      <OpsActions />
 
       <Panel title="Provider quota">
         {health.quota.length === 0 ? (

@@ -1,115 +1,164 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
-import { CountdownChip } from '../../../components/match/CountdownChip';
+import { TeamChip } from '../../../components/match/TeamChip';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { requireUser } from '../../../lib/auth';
-import { createClient } from '../../../lib/supabase/server';
+import { getStandings } from '../../../lib/standings';
 
-import { GoldenBootPicker } from './GoldenBootPicker';
-import { TablePredictor, type PredictorTeam } from './TablePredictor';
-
-export const metadata: Metadata = { title: 'Season table' };
+export const metadata: Metadata = { title: 'Table' };
 
 /**
- * Screen 22 — the season-long game. Entered once, locked at the season's first kickoff
- * with no grace window and no late entries (addendum §H.5).
+ * Competition standings (§4.2 screen 7).
+ *
+ * Zone colouring is a left rail plus a legend rather than a row tint, so the distinction
+ * survives a colourblind reading — and because a tinted row fights the "this is you"
+ * treatment used everywhere else.
+ *
+ * The predicted-position column only appears once the viewer has entered a table, which
+ * is what makes this screen useful rather than decorative: it answers "how wrong am I so
+ * far" without leaving for the Table race board.
  */
-export default async function SeasonTablePage() {
+export default async function TablePage() {
   const user = await requireUser('/table');
-  const supabase = await createClient();
+  const standings = await getStandings(user.id);
 
-  const { data: season } = await supabase
-    .from('seasons')
-    .select('id, label, first_kickoff_at, competitions ( name )')
-    .eq('is_current', true)
-    .maybeSingle();
-
-  if (!season) {
+  if (standings.rows.length === 0) {
     return (
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
-        <h1 className="font-display text-[28px] font-extrabold">Season table</h1>
+        <h1 className="font-display text-[28px] font-extrabold">Table</h1>
         <EmptyState
-          title="No season loaded yet."
-          body="Once the season is imported you can rank all 20 teams here."
+          title="No standings yet."
+          body="The table fills in once the season is imported and matches start being played."
+          action={
+            <Link
+              href="/season-picks"
+              className="inline-flex min-h-tap items-center rounded-md bg-surface-2 px-4 font-display text-[11px] font-bold uppercase tracking-label shadow-el-1"
+            >
+              Predict the final table →
+            </Link>
+          }
         />
       </div>
     );
   }
 
-  const [{ data: teamRows }, { data: markets }] = await Promise.all([
-    supabase
-      .from('team_season_entries')
-      .select('teams ( id, name, code )')
-      .eq('season_id', season.id),
-    supabase
-      .from('markets')
-      .select('id, status, locks_at, market_types!inner ( code )')
-      .eq('season_id', season.id)
-      .in('market_types.code', ['season_table', 'season_golden_boot']),
-  ]);
-
-  const teams: PredictorTeam[] = (teamRows ?? [])
-    .map((row) => row.teams)
-    .filter((team): team is NonNullable<typeof team> => team != null)
-    .map((team) => ({ id: team.id, name: team.name, code: team.code }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-
-  const tableMarket = (markets ?? []).find((m) => m.market_types?.code === 'season_table');
-  const bootMarket = (markets ?? []).find(
-    (m) => m.market_types?.code === 'season_golden_boot',
-  );
-
-  const { data: existing } = tableMarket
-    ? await supabase
-        .from('predictions')
-        .select('value')
-        .eq('user_id', user.id)
-        .eq('market_id', tableMarket.id)
-        .maybeSingle()
-    : { data: null };
-
-  const initialOrder =
-    ((existing?.value as { order?: string[] } | null)?.order ?? []).filter(Boolean);
-
-  // Lock state comes from the market, not from comparing first_kickoff_at to the clock.
-  const locked = tableMarket ? tableMarket.status !== 'open' : false;
+  const total = standings.rows.length;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8">
-      <header className="flex flex-col gap-2">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-8">
+      <header className="flex flex-col gap-1">
         <p className="label">
-          {season.competitions?.name ?? 'Season'} {season.label}
+          {standings.competitionName} {standings.seasonLabel}
         </p>
-        <h1 className="font-display text-[28px] font-extrabold leading-tight">
-          Predict the table
-        </h1>
-        {tableMarket && !locked ? (
-          <CountdownChip target={tableMarket.locks_at} label="Locks at first kickoff" />
-        ) : null}
+        <h1 className="font-display text-[28px] font-extrabold leading-tight">Table</h1>
       </header>
 
-      {teams.length < 20 ? (
-        <EmptyState
-          title="Teams aren't loaded yet."
-          body={`The season needs all 20 teams before you can rank them — ${teams.length} so far.`}
-        />
-      ) : (
-        <TablePredictor
-          seasonId={season.id}
-          teams={teams}
-          initialOrder={initialOrder}
-          locked={locked}
-        />
-      )}
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[40rem] border-collapse text-left">
+          <caption className="sr-only">
+            {standings.competitionName} {standings.seasonLabel} standings
+          </caption>
+          <thead>
+            <tr className="border-b border-border">
+              <th scope="col" className="label py-2 pr-2 font-normal">#</th>
+              <th scope="col" className="label py-2 pr-4 font-normal">Team</th>
+              {standings.hasPrediction ? (
+                <th scope="col" className="label py-2 pr-4 text-right font-normal">You said</th>
+              ) : null}
+              {['P', 'W', 'D', 'L', 'GF', 'GA', 'GD'].map((head) => (
+                <th key={head} scope="col" className="label py-2 pr-3 text-right font-normal">
+                  {head}
+                </th>
+              ))}
+              <th scope="col" className="label py-2 text-right font-normal">Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {standings.rows.map((row) => {
+              const zone =
+                row.position <= 4
+                  ? 'border-l-[3px] border-success'
+                  : row.position === 5
+                    ? 'border-l-[3px] border-warning'
+                    : row.position > total - 3
+                      ? 'border-l-[3px] border-danger'
+                      : 'border-l-[3px] border-transparent';
 
-      {bootMarket ? (
-        <section className="flex flex-col gap-3 border-t border-border pt-6">
-          <h2 className="label">Golden Boot</h2>
-          <GoldenBootPicker
-            seasonId={season.id}
-            locked={bootMarket.status !== 'open'}
-          />
-        </section>
+              const drift =
+                row.predictedPosition != null ? row.predictedPosition - row.position : null;
+
+              return (
+                <tr key={row.teamId} className={`border-b border-border ${zone}`}>
+                  <td className="py-2 pl-2 pr-2 font-num text-[13px] tabular-nums text-text-2">
+                    {row.position}
+                  </td>
+                  <td className="py-2 pr-4">
+                    <Link
+                      href={`/teams/${row.teamId}`}
+                      className="flex items-center gap-2 text-[14px] hover:underline"
+                    >
+                      <TeamChip code={row.code} name={row.name} size={22} />
+                      <span className="truncate">{row.name}</span>
+                    </Link>
+                  </td>
+                  {standings.hasPrediction ? (
+                    <td className="py-2 pr-4 text-right">
+                      <span className="font-num text-[13px] tabular-nums text-text-3">
+                        {row.predictedPosition ?? '—'}
+                      </span>
+                      {drift != null && drift !== 0 ? (
+                        <span
+                          className={`ml-1 font-num text-[11px] tabular-nums ${
+                            Math.abs(drift) <= 2 ? 'text-text-3' : 'text-danger'
+                          }`}
+                          title={`${Math.abs(drift)} place${Math.abs(drift) === 1 ? '' : 's'} out`}
+                        >
+                          {drift > 0 ? `▲${drift}` : `▼${Math.abs(drift)}`}
+                        </span>
+                      ) : null}
+                    </td>
+                  ) : null}
+                  {[row.played, row.won, row.drawn, row.lost, row.goalsFor, row.goalsAgainst].map(
+                    (value, i) => (
+                      <td key={i} className="py-2 pr-3 text-right font-num text-[13px] tabular-nums text-text-2">
+                        {value}
+                      </td>
+                    ),
+                  )}
+                  <td className="py-2 pr-3 text-right font-num text-[13px] tabular-nums text-text-2">
+                    {row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}
+                  </td>
+                  <td className="py-2 text-right font-num text-[14px] font-bold tabular-nums">
+                    {row.points}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Zones are named, not just coloured. */}
+      <ul className="flex flex-wrap gap-4 text-[12.5px] text-text-3">
+        <li className="flex items-center gap-2">
+          <span aria-hidden="true" className="h-3 w-[3px] rounded-full bg-success" /> Champions League
+        </li>
+        <li className="flex items-center gap-2">
+          <span aria-hidden="true" className="h-3 w-[3px] rounded-full bg-warning" /> Europa League
+        </li>
+        <li className="flex items-center gap-2">
+          <span aria-hidden="true" className="h-3 w-[3px] rounded-full bg-danger" /> Relegation
+        </li>
+      </ul>
+
+      {!standings.hasPrediction ? (
+        <Link
+          href="/season-picks"
+          className="inline-flex min-h-tap items-center justify-center rounded-md bg-surface-2 px-5 font-display text-[13px] font-extrabold uppercase tracking-label shadow-el-1"
+        >
+          Predict the final table →
+        </Link>
       ) : null}
     </div>
   );

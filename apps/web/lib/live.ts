@@ -50,6 +50,15 @@ export interface LiveMatch {
   }>;
   /** League mates' picks, only where the reveal policy permits. */
   leaguePicks: Array<{ username: string; home: number; away: number; points: number; isYou: boolean }>;
+  /** Announced lineups, when the provider has them (~an hour before kickoff). */
+  lineups: Array<{
+    teamId: string;
+    formation: string | null;
+    coach: string | null;
+    players: Array<{ name: string; number: number | null; starter: boolean }>;
+  }>;
+  /** Both sides' table positions, for the pre-kickoff read. */
+  form: Array<{ teamId: string; position: number | null; points: number | null; form: string | null }>;
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -207,6 +216,16 @@ export async function getLiveMatch(fixtureId: string, userId: string): Promise<L
     byUser.set(row.user_id, entry);
   }
 
+  const { data: lineupRows } = await supabase
+    .from('fixture_lineups')
+    .select('team_id, formation, coach, players')
+    .eq('fixture_id', fixtureId);
+
+  const { data: standingRows } = await supabase
+    .from('standings')
+    .select('team_id, position, points, form')
+    .in('team_id', [fixture.home.id, fixture.away.id]);
+
   const events = (fixture.fixture_events ?? [])
     .map((event) => ({
       minute: event.minute,
@@ -265,6 +284,24 @@ export async function getLiveMatch(fixtureId: string, userId: string): Promise<L
         isYou: id === userId,
       }))
       .sort((a, b) => b.points - a.points),
+    lineups: (lineupRows ?? []).map((row) => ({
+      teamId: row.team_id,
+      formation: row.formation,
+      coach: row.coach,
+      players: Array.isArray(row.players)
+        ? (row.players as Array<Record<string, unknown>>).map((player) => ({
+            name: String(player.name ?? player.player_id ?? 'Unknown'),
+            number: typeof player.number === 'number' ? player.number : null,
+            starter: player.starter !== false,
+          }))
+        : [],
+    })),
+    form: (standingRows ?? []).map((row) => ({
+      teamId: row.team_id,
+      position: row.position,
+      points: row.points,
+      form: row.form,
+    })),
   };
 }
 

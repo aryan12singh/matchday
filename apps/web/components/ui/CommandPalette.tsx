@@ -46,6 +46,11 @@ export function CommandPalette({
       { id: 'leagues', label: 'Leagues', hint: 'All your leagues', href: '/leagues' },
       { id: 'new-league', label: 'Create a league', href: '/leagues/new' },
       { id: 'join', label: 'Join a league', hint: 'With a code', href: '/join' },
+      { id: 'season-picks', label: 'Season picks', hint: 'Table + Golden Boot', href: '/season-picks' },
+      { id: 'teams', label: 'Teams', hint: 'Squads and stats', href: '/teams' },
+      { id: 'rules', label: 'Scoring rules', hint: 'How points work', href: '/rules' },
+      { id: 'profile', label: 'Profile', hint: 'Username, timezone, calendar', href: '/profile' },
+      { id: 'notifications', label: 'Notifications', hint: 'What reaches you', href: '/settings/notifications' },
       ...leagues.flatMap((league) => [
         { id: `l-${league.id}`, label: league.name, hint: 'League home', href: `/leagues/${league.id}` },
         {

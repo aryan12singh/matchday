@@ -131,3 +131,82 @@ export async function getOpsHealth(): Promise<OpsHealth> {
     })),
   };
 }
+
+
+export interface FixtureInspection {
+  id: string;
+  status: string;
+  kickoffAt: string;
+  homeName: string;
+  awayName: string;
+  homeScore: number | null;
+  awayScore: number | null;
+  resultHash: string | null;
+  manualOverride: boolean;
+  events: Array<{ minute: number | null; type: string; providerEventKey: string | null }>;
+  componentCount: number;
+  hitCount: number;
+  userCount: number;
+  payloads: Array<{ id: string; endpoint: string; fetchedAt: string; httpStatus: number | null }>;
+}
+
+/**
+ * Raw payload inspector data (§4.2 screen 18).
+ *
+ * This is why invariant 1 archives every provider response before interpreting it: when a
+ * normalizer is wrong, this shows what the provider actually said, rather than spending
+ * prepaid quota asking again.
+ */
+export async function inspectFixture(fixtureId: string): Promise<FixtureInspection | null> {
+  const db = createServiceClient();
+
+  const [{ data: fixture }, { data: components }, { data: payloads }] = await Promise.all([
+    db
+      .from('fixtures')
+      .select(
+        `id, status, kickoff_at, home_score, away_score, result_hash, manual_override,
+         home:teams!fixtures_home_team_id_fkey ( name ),
+         away:teams!fixtures_away_team_id_fkey ( name ),
+         fixture_events ( minute, type, provider_event_key )`,
+      )
+      .eq('id', fixtureId)
+      .maybeSingle(),
+    db
+      .from('score_components')
+      .select('category, hit, user_id, markets!inner ( fixture_id )')
+      .eq('markets.fixture_id', fixtureId),
+    db
+      .from('raw_payloads')
+      .select('id, endpoint, fetched_at, http_status')
+      .order('fetched_at', { ascending: false })
+      .limit(10),
+  ]);
+
+  if (!fixture) return null;
+
+  return {
+    id: fixture.id,
+    status: fixture.status,
+    kickoffAt: fixture.kickoff_at,
+    homeName: fixture.home?.name ?? '?',
+    awayName: fixture.away?.name ?? '?',
+    homeScore: fixture.home_score,
+    awayScore: fixture.away_score,
+    resultHash: fixture.result_hash,
+    manualOverride: fixture.manual_override,
+    events: (fixture.fixture_events ?? []).map((event) => ({
+      minute: event.minute,
+      type: event.type,
+      providerEventKey: event.provider_event_key,
+    })),
+    componentCount: (components ?? []).length,
+    hitCount: (components ?? []).filter((c) => c.hit).length,
+    userCount: new Set((components ?? []).map((c) => c.user_id)).size,
+    payloads: (payloads ?? []).map((payload) => ({
+      id: payload.id,
+      endpoint: payload.endpoint,
+      fetchedAt: payload.fetched_at,
+      httpStatus: payload.http_status,
+    })),
+  };
+}

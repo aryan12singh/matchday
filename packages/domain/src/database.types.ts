@@ -2184,12 +2184,25 @@ export type Database = {
         Args: { p_market_id: string; p_owner_id: string }
         Returns: boolean
       }
+      clear_prize_scheme: {
+        Args: { p_league_season_id: string }
+        Returns: undefined
+      }
       create_league: {
         Args: { p_name: string }
         Returns: {
           join_code: string
           league_id: string
         }[]
+      }
+      create_rule_set_version: {
+        Args: {
+          p_definition: Json
+          p_effective_from_round: number
+          p_league_season_id: string
+          p_notes?: string
+        }
+        Returns: string
       }
       current_table_order: { Args: { p_season_id: string }; Returns: string[] }
       enrol_league_season: {
@@ -2215,6 +2228,17 @@ export type Database = {
         Returns: number
       }
       generate_join_code: { Args: { p_length?: number }; Returns: string }
+      head_to_head: {
+        Args: { p_league_season_id: string; p_other_user_id: string }
+        Returns: {
+          category: string
+          mine: boolean
+          round_id: string
+          round_name: string
+          round_number: number
+          theirs: boolean
+        }[]
+      }
       is_league_member: { Args: { p_league_id: string }; Returns: boolean }
       is_league_organizer: { Args: { p_league_id: string }; Returns: boolean }
       is_league_season_member: {
@@ -2260,6 +2284,10 @@ export type Database = {
       }
       regenerate_join_code: { Args: { p_league_id: string }; Returns: string }
       release_advisory_lock: { Args: { p_key: number }; Returns: boolean }
+      remove_member: {
+        Args: { p_league_id: string; p_user_id: string }
+        Returns: undefined
+      }
       round_selection_state: {
         Args: { p_league_season_id: string; p_round_id: string }
         Returns: {
@@ -2304,6 +2332,10 @@ export type Database = {
         Args: { p_cron_secret: string; p_site_url: string }
         Returns: undefined
       }
+      set_member_role: {
+        Args: { p_league_id: string; p_role: string; p_user_id: string }
+        Returns: undefined
+      }
       table_race_entries: {
         Args: { p_league_season_id: string }
         Returns: {
@@ -2331,6 +2363,15 @@ export type Database = {
           p_selection_mode?: string
         }
         Returns: undefined
+      }
+      upsert_prize_scheme: {
+        Args: {
+          p_currency_label: string
+          p_definition: Json
+          p_kind: string
+          p_league_season_id: string
+        }
+        Returns: string
       }
     }
     Enums: {
