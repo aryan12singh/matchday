@@ -17,11 +17,17 @@ import type {
  * approach, and the reason a normalizer bug is recoverable: re-run it over raw_payloads
  * rather than re-fetching on a prepaid quota.
  *
- * IMPORTANT: these were written against API-Football's published v3 response shapes, not
- * against captured live responses — Task 6 (cassette capture) is blocked on the API key.
- * The cassette tests below use synthetic payloads built to those documented shapes, so
- * they pin the *transformation* but cannot yet confirm the *input*. Re-verify against
- * real cassettes before trusting live data.
+ * These were originally written against API-Football's published v3 shapes, with no way to
+ * confirm the input. As of 30 July 2026 they are verified against real captured responses
+ * (cassettes.test.ts, payloads in ../cassettes/) and every branch below held on first
+ * contact — including the three that decide money-adjacent outcomes:
+ *
+ *   {type: "Goal", detail: "Penalty"}    → penalty_goal
+ *   {type: "Goal", detail: "Own Goal"}   → own_goal      (no first-scorer pick can hit it)
+ *   {type: "Var",  detail: "Penalty confirmed"} → var    (NOT a goal, despite the word)
+ *
+ * That last one is the trap: a naive detail match on /penalty/ would count a VAR line as a
+ * goal and hand first-scorer points to the wrong player.
  */
 
 /** API-Football's status short codes → our fixture state machine. */

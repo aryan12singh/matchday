@@ -2,7 +2,7 @@ import { timingSafeEqual } from 'node:crypto';
 
 import { NextResponse, type NextRequest } from 'next/server';
 
-import { runTick } from '@matchday/jobs';
+import { createProviderConfig, runTick } from '@matchday/jobs';
 
 import { createServiceClient } from '../../../../lib/supabase/service';
 
@@ -42,7 +42,12 @@ export async function POST(request: NextRequest) {
   }
 
   const started = Date.now();
-  const result = await runTick(createServiceClient());
+  const client = createServiceClient();
+
+  // Ingestion only engages when a provider key is configured; without one the tick still
+  // locks, settles and snapshots exactly as it did before ingestion existed.
+  const provider = createProviderConfig(client);
+  const result = await runTick(client, provider ?? {});
 
   // 200 even with step errors: pg_cron has no useful reaction to a 500, and a
   // non-2xx would obscure the steps that did succeed. The errors are in the body and

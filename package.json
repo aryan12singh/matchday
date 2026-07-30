@@ -23,12 +23,15 @@
     "db:seed:dev": "tsx scripts/seed-dev-season.ts",
     "drill": "tsx scripts/matchday-drill.ts",
     "ui:smoke": "tsx scripts/ui-smoke.ts",
-    "dev:setup": "tsx scripts/dev-setup.ts"
+    "dev:setup": "tsx scripts/dev-setup.ts",
+    "cassettes:capture": "tsx scripts/capture-cassettes.ts",
+    "ingest:drill": "tsx scripts/ingestion-drill.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@matchday/domain": "workspace:*",
     "@matchday/jobs": "workspace:*",
+    "@matchday/provider": "workspace:*",
     "@matchday/scoring": "workspace:*",
     "@next/eslint-plugin-next": "^15.5.21",
     "@supabase/supabase-js": "^2.110.8",

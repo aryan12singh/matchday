@@ -2282,6 +2282,10 @@ export type Database = {
           name: string
         }[]
       }
+      record_provider_call: {
+        Args: { p_plan_limit?: number; p_provider: string }
+        Returns: number
+      }
       regenerate_join_code: { Args: { p_league_id: string }; Returns: string }
       release_advisory_lock: { Args: { p_key: number }; Returns: boolean }
       remove_member: {

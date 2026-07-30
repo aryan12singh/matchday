@@ -1,0 +1,10 @@
+{
+  "season": 2024,
+  "note": "Fixture provider ids whose event streams contain each shape. Used by tests.",
+  "highScoring": "1208191",
+  "found": {
+    "penalty_goal": "1208083",
+    "red": "1208105",
+    "own_goal": "1208261"
+  }
+}

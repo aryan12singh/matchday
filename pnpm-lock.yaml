@@ -17,6 +17,9 @@ importers:
       '@matchday/jobs':
         specifier: workspace:*
         version: link:packages/jobs
+      '@matchday/provider':
+        specifier: workspace:*
+        version: link:packages/provider
       '@matchday/scoring':
         specifier: workspace:*
         version: link:packages/scoring

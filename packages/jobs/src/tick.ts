@@ -1,8 +1,14 @@
 import type { Database } from '@matchday/domain';
+import type { ProviderAdapter, SeasonRef } from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { settleFixtureMarkets } from './settlement';
 import { snapshotRanks } from './snapshots';
+import { syncFinal } from './sync-final';
+import { syncFixtures } from './sync-fixtures';
+import { syncLive } from './sync-live';
+import { syncReference } from './sync-reference';
+import { type SyncAction, planWindow } from './windows';
 
 type Db = SupabaseClient<Database>;
 
@@ -16,6 +22,11 @@ type Db = SupabaseClient<Database>;
  *
  * Every step is independently safe to skip. A tick that dies halfway leaves the next one
  * to finish the job, which is why nothing here depends on a previous step having run.
+ *
+ * Ingestion is optional. Without an adapter the tick still locks, settles and snapshots —
+ * which is exactly what it did before ingestion existed, and what it does in any
+ * environment with no provider key. The database half of the pipeline never depends on the
+ * provider half being configured.
  */
 
 export interface TickResult {
@@ -23,11 +34,35 @@ export interface TickResult {
   selectionFallbacks: number;
   fixturesSettled: number;
   snapshotsWritten: number;
+  /** Empty when no adapter is configured. */
+  ingestion: IngestionSummary | null;
   errors: string[];
 }
 
-export async function runTick(client: Db): Promise<TickResult> {
+export interface IngestionSummary {
+  actions: SyncAction[];
+  reason: string;
+  estimatedRequests: number;
+  liveUpdated: number;
+  eventsWritten: number;
+  finalised: number;
+  corrected: number;
+  rescheduled: number;
+  standingsRows: number;
+  skippedForQuota: boolean;
+}
+
+export interface TickOptions {
+  adapter?: ProviderAdapter;
+  seasonRef?: SeasonRef;
+  /** Stand down when fewer than this many provider requests remain today. */
+  quotaFloor?: number;
+  now?: number;
+}
+
+export async function runTick(client: Db, options: TickOptions = {}): Promise<TickResult> {
   const errors: string[] = [];
+  const now = options.now ?? Date.now();
 
   const marketsLocked = await step(errors, 'lock_markets_sweep', async () => {
     const { data, error } = await client.rpc('lock_markets_sweep');
@@ -40,6 +75,17 @@ export async function runTick(client: Db): Promise<TickResult> {
     if (error) throw error;
     return data ?? 0;
   });
+
+  // --- ingestion ------------------------------------------------------------
+  //
+  // Runs before settlement so that a result arriving this minute is settled on this tick
+  // rather than the next. On a Saturday that is the difference between a leaderboard that
+  // updates at full time and one that updates a minute later, every time.
+  let ingestion: IngestionSummary | null = null;
+
+  if (options.adapter && options.seasonRef) {
+    ingestion = await ingest(client, options.adapter, options.seasonRef, now, options, errors);
+  }
 
   // Finished fixtures whose markets have not settled. Settlement takes a per-fixture
   // advisory lock, so a slow run simply means the next tick picks up where this left off
@@ -65,13 +111,155 @@ export async function runTick(client: Db): Promise<TickResult> {
   });
 
   // Snapshots only after something settled: a snapshot per minute of an unchanged board
-  // is noise that makes the movement arrows meaningless.
-  const snapshotsWritten =
-    fixturesSettled > 0
-      ? await step(errors, 'snapshot_ranks', () => snapshotRanks(client))
-      : 0;
+  // is noise that makes the movement arrows meaningless. A correction counts too — it
+  // moves ranks, and the arrows should show that.
+  const settlementHappened = fixturesSettled > 0 || (ingestion?.corrected ?? 0) > 0;
+  const snapshotsWritten = settlementHappened
+    ? await step(errors, 'snapshot_ranks', () => snapshotRanks(client))
+    : 0;
 
-  return { marketsLocked, selectionFallbacks, fixturesSettled, snapshotsWritten, errors };
+  return {
+    marketsLocked,
+    selectionFallbacks,
+    fixturesSettled,
+    snapshotsWritten,
+    ingestion,
+    errors,
+  };
+}
+
+async function ingest(
+  client: Db,
+  adapter: ProviderAdapter,
+  seasonRef: SeasonRef,
+  now: number,
+  options: TickOptions,
+  errors: string[],
+): Promise<IngestionSummary> {
+  const summary: IngestionSummary = {
+    actions: [],
+    reason: 'not evaluated',
+    estimatedRequests: 0,
+    liveUpdated: 0,
+    eventsWritten: 0,
+    finalised: 0,
+    corrected: 0,
+    rescheduled: 0,
+    standingsRows: 0,
+    skippedForQuota: false,
+  };
+
+  // Which season, and what is happening in it. One query, no provider calls — this is what
+  // makes an idle day free.
+  const { data: season } = await client
+    .from('seasons')
+    .select('id')
+    .eq('is_current', true)
+    .maybeSingle();
+
+  if (!season) {
+    summary.reason = 'no current season';
+    return summary;
+  }
+
+  const horizonStart = new Date(now - 6 * 60 * 60 * 1000).toISOString();
+  const horizonEnd = new Date(now + 6 * 60 * 60 * 1000).toISOString();
+
+  const { data: nearby } = await client
+    .from('fixtures')
+    .select('kickoff_at, status, result_hash, rounds!inner ( stages!inner ( season_id ) )')
+    .eq('rounds.stages.season_id', season.id)
+    .gte('kickoff_at', horizonStart)
+    .lte('kickoff_at', horizonEnd);
+
+  const rows = nearby ?? [];
+  const plan = planWindow({
+    now,
+    kickoffs: rows.map((r) => new Date(r.kickoff_at).getTime()),
+    hasInPlay: rows.some((r) => ['lineups', 'live', 'ht'].includes(r.status)),
+    hasUnfinalised: rows.some(
+      (r) => ['lineups', 'live', 'ht', 'finished'].includes(r.status) && r.result_hash == null,
+    ),
+    hasRecentlySettled: rows.some((r) => ['settled', 'finished'].includes(r.status)),
+  });
+
+  summary.actions = plan.actions;
+  summary.reason = plan.reason;
+  summary.estimatedRequests = plan.estimatedRequests;
+
+  if (plan.actions.length === 0) return summary;
+
+  // Quota gate. The breaker in quota.ts protects against a provider that is failing; this
+  // protects against one that is working perfectly and being asked too much. On the Free
+  // plan's 100/day a single matchday would otherwise exhaust the budget mid-afternoon and
+  // leave the evening kickoff with no data at all — better to degrade deliberately.
+  const floor = options.quotaFloor ?? 0;
+  if (floor > 0) {
+    const { data: used } = await client
+      .from('provider_quota_ledger')
+      .select('calls')
+      .eq('provider', adapter.name)
+      .eq('day', new Date(now).toISOString().slice(0, 10))
+      .maybeSingle();
+
+    const spent = used?.calls ?? 0;
+    if (spent + plan.estimatedRequests > floor) {
+      summary.skippedForQuota = true;
+      summary.reason = `${plan.reason} — held back, ${spent} requests used today`;
+      return summary;
+    }
+  }
+
+  const seasonId = season.id;
+
+  for (const action of plan.actions) {
+    if (action === 'live') {
+      await step(errors, 'sync_live', async () => {
+        const result = await syncLive(client, adapter, { seasonId, seasonRef });
+        summary.liveUpdated += result?.updated ?? 0;
+        summary.eventsWritten += result?.eventsWritten ?? 0;
+        return 0;
+      });
+    }
+
+    if (action === 'final') {
+      await step(errors, 'sync_final', async () => {
+        const result = await syncFinal(client, adapter, { mode: 'finalise' });
+        summary.finalised += result?.finalised ?? 0;
+        return 0;
+      });
+    }
+
+    if (action === 'corrections') {
+      await step(errors, 'sync_corrections', async () => {
+        const result = await syncFinal(client, adapter, { mode: 'corrections' });
+        summary.corrected += result?.corrected ?? 0;
+        return 0;
+      });
+    }
+
+    if (action === 'fixtures') {
+      await step(errors, 'sync_fixtures', async () => {
+        const result = await syncFixtures(client, adapter, { seasonId, seasonRef, horizonDays: 30 });
+        summary.rescheduled += result?.rescheduled ?? 0;
+        return 0;
+      });
+    }
+
+    if (action === 'reference') {
+      await step(errors, 'sync_reference', async () => {
+        const result = await syncReference(client, adapter, {
+          seasonId,
+          seasonRef,
+          skipIfUnplayed: true,
+        });
+        summary.standingsRows += result?.standingsRows ?? 0;
+        return 0;
+      });
+    }
+  }
+
+  return summary;
 }
 
 /**

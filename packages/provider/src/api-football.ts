@@ -18,6 +18,7 @@ import {
   normalizeTeams,
   normalizeTopScorers,
 } from './normalizers';
+import { type ProviderRequest, requests, stableHash } from './requests';
 
 /**
  * API-Football v3 adapter (addendum §F: Pro plan, 7,500 req/day, 300 req/min).
@@ -46,7 +47,7 @@ export class ApiFootballAdapter implements ProviderAdapter {
     this.fetchImpl = options.fetchImpl ?? fetch;
   }
 
-  private async request(endpoint: string, params: Record<string, string | number>) {
+  private async request({ endpoint, params }: ProviderRequest) {
     await this.options.onRequest?.(endpoint);
 
     const url = new URL(endpoint, this.baseUrl);
@@ -90,10 +91,7 @@ export class ApiFootballAdapter implements ProviderAdapter {
   }
 
   async listTeams(season: SeasonRef): Promise<RawResponse<ProviderTeam[]>> {
-    const result = await this.request('/teams', {
-      league: season.leagueProviderId,
-      season: season.seasonYear,
-    });
+    const result = await this.request(requests.teams(season));
     return { ...result, data: normalizeTeams(result.raw) };
   }
 
@@ -101,20 +99,17 @@ export class ApiFootballAdapter implements ProviderAdapter {
     _season: SeasonRef,
     teamProviderId: string,
   ): Promise<RawResponse<ProviderPlayer[]>> {
-    const result = await this.request('/players/squads', { team: teamProviderId });
+    const result = await this.request(requests.squad(_season, teamProviderId));
     return { ...result, data: normalizeSquad(result.raw, teamProviderId) };
   }
 
   async listFixtures(season: SeasonRef): Promise<RawResponse<ProviderFixture[]>> {
-    const result = await this.request('/fixtures', {
-      league: season.leagueProviderId,
-      season: season.seasonYear,
-    });
+    const result = await this.request(requests.fixtures(season));
     return { ...result, data: normalizeFixtures(result.raw) };
   }
 
   async getFixture(fixtureProviderId: string): Promise<RawResponse<ProviderFixture>> {
-    const result = await this.request('/fixtures', { id: fixtureProviderId });
+    const result = await this.request(requests.fixture(fixtureProviderId));
     const fixtures = normalizeFixtures(result.raw);
     const fixture = fixtures[0];
     if (!fixture) {
@@ -124,47 +119,23 @@ export class ApiFootballAdapter implements ProviderAdapter {
   }
 
   async listLiveFixtures(season: SeasonRef): Promise<RawResponse<ProviderFixture[]>> {
-    const result = await this.request('/fixtures', {
-      league: season.leagueProviderId,
-      season: season.seasonYear,
-      live: 'all',
-    });
+    const result = await this.request(requests.liveFixtures(season));
     return { ...result, data: normalizeFixtures(result.raw) };
   }
 
   async listEvents(fixtureProviderId: string): Promise<RawResponse<ProviderEvent[]>> {
-    const result = await this.request('/fixtures/events', { fixture: fixtureProviderId });
+    const result = await this.request(requests.events(fixtureProviderId));
     return { ...result, data: normalizeEvents(result.raw, fixtureProviderId) };
   }
 
   async listStandings(season: SeasonRef): Promise<RawResponse<ProviderStanding[]>> {
-    const result = await this.request('/standings', {
-      league: season.leagueProviderId,
-      season: season.seasonYear,
-    });
+    const result = await this.request(requests.standings(season));
     return { ...result, data: normalizeStandings(result.raw) };
   }
 
   async listTopScorers(season: SeasonRef): Promise<RawResponse<ProviderTopScorer[]>> {
-    const result = await this.request('/players/topscorers', {
-      league: season.leagueProviderId,
-      season: season.seasonYear,
-    });
+    const result = await this.request(requests.topScorers(season));
     return { ...result, data: normalizeTopScorers(result.raw) };
   }
 }
 
-/** Deterministic params hash for the raw_payloads archive, so replays are findable. */
-function stableHash(params: Record<string, string | number>): string {
-  const canonical = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${params[key]}`)
-    .join('&');
-
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < canonical.length; i += 1) {
-    hash ^= canonical.charCodeAt(i);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return (hash >>> 0).toString(16).padStart(8, '0');
-}
