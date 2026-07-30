@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { EnablePush } from '../../../../components/pwa/EnablePush';
 import Link from 'next/link';
 
 import { requireUser } from '../../../../lib/auth';
@@ -59,10 +61,12 @@ export default async function NotificationSettingsPage() {
 
       <section className="flex flex-col gap-3 border-t border-border pt-6">
         <h2 className="label">Devices</h2>
+        {/* The subscription itself can only be created in the browser, so the control is
+            a client component; the key it needs is public by design. */}
+        <EnablePush publicKey={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null} />
         {(devices ?? []).length === 0 ? (
           <p className="text-[13px] text-text-3">
-            No device registered for push yet. Install the app and allow notifications to
-            add one.
+            No device registered for push yet.
           </p>
         ) : (
           <ul className="flex flex-col divide-y divide-border">

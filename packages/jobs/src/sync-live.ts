@@ -5,6 +5,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { archiveRawPayload } from './bootstrap';
 import { resolveEntity } from './entity-map';
 import { withAdvisoryLock } from './locks';
+import { reconcileFixtures } from './reconcile';
 import { runJob } from './sync-runs';
 
 type Db = SupabaseClient<Database>;
@@ -35,6 +36,8 @@ export interface SyncLiveResult {
   updated: number;
   eventsWritten: number;
   unmatched: number;
+  /** Fixtures linked to this provider for the first time on this run. */
+  linked: number;
 }
 
 export async function syncLive(
@@ -52,7 +55,20 @@ export async function syncLive(
         updated: 0,
         eventsWritten: 0,
         unmatched: 0,
+        linked: 0,
       };
+
+      // Link anything this provider has never been seen to before reading it. The season
+      // is loaded from the Premier League's own JSON, so on the first matchday every
+      // incoming fixture is an unknown id — without this the whole run is a no-op, and a
+      // silent one.
+      const reconciled = await reconcileFixtures(
+        client,
+        adapter.name,
+        options.seasonId,
+        response.data,
+      );
+      result.linked = reconciled.linked;
 
       for (const incoming of response.data) {
         const fixtureId = await resolveEntity(client, adapter.name, 'fixture', incoming.providerId);

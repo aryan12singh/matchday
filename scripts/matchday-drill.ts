@@ -18,7 +18,7 @@
  *   pnpm drill
  */
 import { type Database, DEFAULT_WEIGHTS } from '@matchday/domain';
-import { settleFixtureMarkets } from '@matchday/jobs';
+import { settleLeaguePrizes, settleFixtureMarkets } from '@matchday/jobs';
 import { aggregateLeaderboard, toComponentRows } from '@matchday/scoring';
 import { createClient } from '@supabase/supabase-js';
 
@@ -204,6 +204,56 @@ async function main() {
     `re-running over unchanged inputs produced ${again.componentsChanged} diffs, expected 0`,
   );
   pass('re-running over unchanged inputs is a no-op — invariant 5 holds');
+
+  // --- prizes -------------------------------------------------------------------------
+  //
+  // The scheme has been configurable for a while and nothing ever wrote a settlement row,
+  // so a league could switch prizes on and never get a number out of it. This proves a
+  // real board becomes a real ledger, and that a correction revises rather than rewrites.
+  heading('Prize ledger');
+
+  // Written directly rather than through upsert_prize_scheme: that RPC is organizer-gated
+  // on auth.uid(), which is null for the service role this drill runs as. The gate is
+  // covered by pgTAP; what is under test here is the engine.
+  const { data: scheme, error: schemeError } = await db
+    .from('prize_schemes')
+    .insert({
+      league_season_id: league.leagueSeasonId,
+      kind: 'zero_sum_rank_table',
+      currency_label: '£',
+      definition: { overall: [10, -10], per_round: [5, -5] },
+      activated_at: new Date().toISOString(),
+    })
+    .select('id')
+    .single();
+  assert(!schemeError, `could not create the prize scheme: ${schemeError?.message}`);
+
+  const { error: attachError } = await db
+    .from('league_seasons')
+    .update({ prize_scheme_id: scheme!.id })
+    .eq('id', league.leagueSeasonId);
+  assert(!attachError, `could not attach the prize scheme: ${attachError?.message}`);
+
+  const prizes = await settleLeaguePrizes(db, league.leagueSeasonId);
+  assert(prizes != null && prizes.skipped == null, `prize settlement skipped: ${prizes?.skipped}`);
+  assert(prizes!.written === 2, `expected 2 ledger rows, got ${prizes!.written}`);
+
+  const { data: ledger } = await db
+    .from('prize_settlements')
+    .select('user_id, amount, revised_from')
+    .eq('league_season_id', league.leagueSeasonId)
+    .is('period_round_id', null);
+
+  const sum = (ledger ?? []).reduce((total, row) => total + Number(row.amount), 0);
+  assert(Math.abs(sum) < 0.005, `the ledger does not net to zero (got ${sum})`);
+  pass(`ledger written: ${(ledger ?? []).map((r) => Number(r.amount)).sort((a, b) => b - a).join(', ')} — nets to zero`);
+
+  const rerunPrizes = await settleLeaguePrizes(db, league.leagueSeasonId);
+  assert(
+    rerunPrizes!.written === 0 && rerunPrizes!.revised === 0,
+    `re-running the ledger wrote ${rerunPrizes!.written} and revised ${rerunPrizes!.revised}, expected none`,
+  );
+  pass('re-running the ledger changes nothing — it does not grow on every tick');
 
   console.log(`\n${checks} checks passed. The spine works end to end.\n`);
 }

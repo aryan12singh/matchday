@@ -142,6 +142,8 @@ export function normalizeFixtures(payload: unknown): ProviderFixture[] {
       minute: asNumber(status.elapsed),
       homeTeamProviderId: String(teams.home?.id),
       awayTeamProviderId: String(teams.away?.id),
+      homeTeamName: asString(teams.home?.name),
+      awayTeamName: asString(teams.away?.name),
       homeScore: asNumber(goals.home),
       awayScore: asNumber(goals.away),
       htHome: asNumber(score.halftime?.home),

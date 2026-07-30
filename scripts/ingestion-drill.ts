@@ -386,6 +386,73 @@ async function main() {
     .select('id', { count: 'exact', head: true });
   check('raw payloads archived before interpretation — invariant 1', (payloads ?? 0) > 0, `${payloads}`);
 
+  // --- 10. cross-provider reconciliation ------------------------------------
+  //
+  // The schedule is loaded from the Premier League's own JSON and results arrive from
+  // API-Football, which share no ids. Without this link the live sync reads every fixture
+  // as unknown and does nothing — silently.
+  console.log('\n▸ Cross-provider reconciliation');
+  const { reconcileFixtures } = await import('../packages/jobs/src/reconcile');
+
+  const { data: pairing } = await client
+    .from('fixtures')
+    .select('id, kickoff_at, home:teams!fixtures_home_team_id_fkey ( name ), away:teams!fixtures_away_team_id_fkey ( name )')
+    .limit(1)
+    .single();
+
+  const homeName = (pairing!.home as unknown as { name: string }).name;
+  const awayName = (pairing!.away as unknown as { name: string }).name;
+
+  // Spelled the way the OTHER provider would spell it, which is the whole difficulty.
+  const spelledDifferently = (n: string) =>
+    ({ 'Man Utd': 'Manchester United', 'Man City': 'Manchester City',
+       "Nott'm Forest": 'Nottingham Forest', Spurs: 'Tottenham',
+       'Ipswich Town': 'Ipswich', 'Hull City': 'Hull' })[n] ?? n;
+
+  const foreign = [{
+    providerId: 'foreign-9001',
+    roundLabel: 'Regular Season - 1',
+    roundNumber: 1,
+    kickoffAt: pairing!.kickoff_at,
+    status: 'scheduled' as const,
+    minute: null,
+    homeTeamProviderId: 'af-home-1',
+    awayTeamProviderId: 'af-away-1',
+    homeTeamName: spelledDifferently(homeName),
+    awayTeamName: spelledDifferently(awayName),
+    homeScore: null, awayScore: null, htHome: null, htAway: null, venue: null,
+  }];
+
+  const link = await reconcileFixtures(client, 'api-football', seasonId, foreign);
+  check('a foreign fixture links to ours despite different club names',
+    link.linked === 1, JSON.stringify(link));
+
+  const { data: linked } = await client
+    .from('provider_entity_map')
+    .select('internal_id')
+    .eq('provider', 'api-football')
+    .eq('entity_type', 'fixture')
+    .eq('provider_id', 'foreign-9001')
+    .maybeSingle();
+  check('and it points at the right fixture', linked?.internal_id === pairing!.id);
+
+  const again = await reconcileFixtures(client, 'api-football', seasonId, foreign);
+  check('re-running is a no-op, not a duplicate', again.linked === 0 && again.alreadyMapped === 1);
+
+  const wrongDate = await reconcileFixtures(client, 'api-football', seasonId, [{
+    ...foreign[0]!,
+    providerId: 'foreign-9002',
+    kickoffAt: new Date(new Date(pairing!.kickoff_at).getTime() + 200 * 24 * 3600 * 1000).toISOString(),
+  }]);
+  check('the same clubs months away are refused, not linked',
+    wrongDate.rejectedKickoff === 1 && wrongDate.linked === 0, JSON.stringify(wrongDate));
+
+  const unknownClub = await reconcileFixtures(client, 'api-football', seasonId, [{
+    ...foreign[0]!, providerId: 'foreign-9003', homeTeamName: 'Real Madrid',
+  }]);
+  check('a club outside the competition is refused',
+    unknownClub.unmatchedClub === 1 && unknownClub.linked === 0);
+
   console.log(`\n${passed} passed, ${failed} failed\n`);
   process.exit(failed > 0 ? 1 : 0);
 }

@@ -2,6 +2,8 @@
 
 import type { FixtureMarketPrediction, PredictFixture } from '../../lib/predictions';
 
+import { SquadSearch } from './SquadSearch';
+
 /**
  * The advanced-market sheet: the hedges plus the two "first goal" markets.
  *
@@ -106,25 +108,30 @@ export function AdvancedMarkets({
       <fieldset className="flex flex-col gap-2">
         <legend className="label pb-2">First scorer</legend>
         <p className="text-[12.5px] text-text-3">
-          Squad search arrives with the season bootstrap. Own goals never count as a first
-          scorer.
+          Own goals never count as a first scorer.
         </p>
         <div className="flex flex-wrap gap-2">
           <Choice
             selected={p.firstGoalscorer.none}
-            onClick={() => patch({ firstGoalscorer: { playerId: null, none: true } })}
+            onClick={() =>
+              patch({ firstGoalscorer: { playerId: null, none: !p.firstGoalscorer.none } })
+            }
           >
             No scorer
           </Choice>
-          {p.firstGoalscorer.playerId ? (
-            <Choice
-              selected
-              onClick={() => patch({ firstGoalscorer: { playerId: null, none: false } })}
-            >
-              Clear pick
-            </Choice>
-          ) : null}
         </div>
+        {/* Hidden rather than disabled while "no scorer" is chosen: the two are mutually
+            exclusive answers to one question, and a visible dead control invites a tap
+            that does nothing. */}
+        {!p.firstGoalscorer.none ? (
+          <SquadSearch
+            fixtureId={fixture.id}
+            homeName={fixture.home.name}
+            awayName={fixture.away.name}
+            selectedPlayerId={p.firstGoalscorer.playerId}
+            onSelect={(playerId) => patch({ firstGoalscorer: { playerId, none: false } })}
+          />
+        ) : null}
       </fieldset>
     </div>
   );

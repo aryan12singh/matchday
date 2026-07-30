@@ -64,6 +64,13 @@ export interface ProviderFixture {
   minute: number | null;
   homeTeamProviderId: string;
   awayTeamProviderId: string;
+  /**
+   * Club names as this provider spells them. Present so a fixture can be matched to one
+   * already loaded from a different source, which is the only way to link the schedule
+   * (Premier League JSON) to live results (API-Football) — their ids share nothing.
+   */
+  homeTeamName?: string | null;
+  awayTeamName?: string | null;
   homeScore: number | null;
   awayScore: number | null;
   htHome: number | null;

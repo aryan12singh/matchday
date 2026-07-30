@@ -14,5 +14,6 @@
 export * from './settlers';
 export * from './season-table';
 export * from './leaderboard';
+export * from './prizes';
 
 export const SCORING_PACKAGE = '@matchday/scoring' as const;

@@ -1,8 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
+import { requireUser } from '../../../lib/auth';
+import { NOTIFICATION_TYPES } from '../../../lib/notification-types';
 import { createClient } from '../../../lib/supabase/server';
 
 export interface ProfileState {
@@ -88,16 +91,6 @@ export async function rotateCalendarToken(): Promise<ProfileState> {
   return { notice: 'New calendar link generated. The old one no longer works.' };
 }
 
-const NOTIFICATION_TYPES = [
-  'deadline_reminder',
-  'lineups_posted',
-  'results_and_points',
-  'rank_change',
-  'recap_ready',
-  'voting_open',
-  'selection_finalized',
-] as const;
-
 export async function updateNotificationPrefs(
   _previous: ProfileState,
   formData: FormData,
@@ -131,4 +124,47 @@ export async function updateNotificationPrefs(
   return { notice: 'Preferences saved.' };
 }
 
-export { NOTIFICATION_TYPES };
+
+/**
+ * Permanent account deletion.
+ *
+ * Guarded by typing the username rather than a confirm dialog: this cannot be undone, and
+ * a dialog is dismissed by reflex. The database function does the work — deleting from
+ * auth.users needs privileges the browser will never have.
+ */
+export async function deleteAccount(
+  _previous: ProfileState,
+  formData: FormData,
+): Promise<ProfileState | never> {
+  const user = await requireUser();
+  if (!user) return { error: 'Sign in first.' };
+
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const typed = String(formData.get('confirmUsername') ?? '').trim();
+  if (!profile || typed !== profile.username) {
+    return { error: 'Type your username exactly to confirm.' };
+  }
+
+  const { error } = await supabase.rpc('delete_own_account');
+
+  if (error) {
+    // The one refusal worth explaining: a league whose only organizer leaves becomes
+    // unadministrable, so the function refuses until somebody else is promoted.
+    if (error.code === '23514' && /organizer/i.test(error.message)) {
+      return {
+        error:
+          'You are the only organizer of a league. Promote someone else there first, then delete your account.',
+      };
+    }
+    return { error: 'Could not delete your account.' };
+  }
+
+  await supabase.auth.signOut();
+  redirect('/login?deleted=1');
+}

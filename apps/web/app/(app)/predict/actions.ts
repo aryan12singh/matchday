@@ -66,7 +66,15 @@ export async function savePrediction(input: SavePredictionInput): Promise<SaveRe
     return { status: 'error', message: 'Could not save. We will retry.' };
   }
 
-  revalidatePath('/predict');
+  // Deliberately NOT revalidatePath('/predict').
+  //
+  // Autosave fires on every change, and revalidating pushes a fresh RSC payload that
+  // replaces the board mid-edit — discarding the optimistic value the user is still
+  // looking at. The symptom was a first-scorer pick that persisted to the database and
+  // then vanished from the screen a moment later, which reads as "it didn't save".
+  //
+  // The client is already the authority on unsaved edits and rolls back explicitly when
+  // the server rejects one, so there is nothing here for a refetch to fix.
   return { status: 'saved', at: new Date().toISOString() };
 }
 
@@ -111,4 +119,88 @@ export async function saveGoldenBoot(seasonId: string, playerId: string): Promis
 
   revalidatePath('/table');
   return { status: 'saved', at: new Date().toISOString() };
+}
+
+/**
+ * The two squads for one fixture, for the first-scorer picker.
+ *
+ * Loaded on demand rather than embedded in the board: a matchweek is ten fixtures, so
+ * shipping every squad up front would put ~560 players on the wire to populate a control
+ * most people open for a handful of matches. Fetching per fixture is ~56 players, and the
+ * client caches what it has already asked for.
+ *
+ * Ordered by position then name so the list reads like a team sheet — goalkeepers first —
+ * rather than in whatever order the rows came back.
+ */
+export interface SquadPlayer {
+  id: string;
+  name: string;
+  knownAs: string;
+  position: string | null;
+  shirtNumber: number | null;
+  teamId: string;
+}
+
+const POSITION_ORDER: Record<string, number> = {
+  Goalkeeper: 0,
+  Defender: 1,
+  Midfielder: 2,
+  Forward: 3,
+};
+
+export async function loadFixtureSquads(
+  fixtureId: string,
+): Promise<{ home: SquadPlayer[]; away: SquadPlayer[] } | { error: string }> {
+  if (!z.string().uuid().safeParse(fixtureId).success) return { error: 'Unknown fixture.' };
+
+  const supabase = await createClient();
+
+  const { data: fixture } = await supabase
+    .from('fixtures')
+    .select('home_team_id, away_team_id, rounds!fixtures_round_id_fkey ( stages ( season_id ) )')
+    .eq('id', fixtureId)
+    .maybeSingle();
+
+  if (!fixture) return { error: 'Unknown fixture.' };
+
+  const seasonId = (
+    fixture.rounds as unknown as { stages: { season_id: string } | null } | null
+  )?.stages?.season_id;
+  if (!seasonId) return { error: 'That fixture has no season.' };
+
+  const { data, error } = await supabase
+    .from('squad_memberships')
+    .select('team_id, shirt_number, position, players ( id, full_name, known_as )')
+    .eq('season_id', seasonId)
+    .in('team_id', [fixture.home_team_id, fixture.away_team_id]);
+
+  if (error) return { error: 'Could not load the squads.' };
+
+  const players: SquadPlayer[] = (data ?? [])
+    .filter((row) => row.players != null)
+    .map((row) => {
+      const player = row.players as unknown as {
+        id: string;
+        full_name: string;
+        known_as: string | null;
+      };
+      return {
+        id: player.id,
+        name: player.full_name,
+        knownAs: player.known_as ?? player.full_name,
+        position: row.position,
+        shirtNumber: row.shirt_number,
+        teamId: row.team_id,
+      };
+    })
+    .sort(
+      (a, b) =>
+        (POSITION_ORDER[a.position ?? ''] ?? 9) - (POSITION_ORDER[b.position ?? ''] ?? 9) ||
+        a.knownAs.localeCompare(b.knownAs),
+    );
+
+  return {
+    home: players.filter((p) => p.teamId === fixture.home_team_id),
+    away: players.filter((p) => p.teamId === fixture.away_team_id),
+  };
 }

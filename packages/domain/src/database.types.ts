@@ -2205,6 +2205,7 @@ export type Database = {
         Returns: string
       }
       current_table_order: { Args: { p_season_id: string }; Returns: string[] }
+      delete_own_account: { Args: never; Returns: undefined }
       enrol_league_season: {
         Args: {
           p_league_id: string

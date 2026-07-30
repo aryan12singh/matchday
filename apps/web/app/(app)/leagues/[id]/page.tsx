@@ -61,6 +61,16 @@ export default async function LeaguePage({ params }: { params: Promise<{ id: str
             >
               Leaderboard
             </Link>
+            {/* Money UI appears only when the league actually has a prize scheme (§6.5).
+                A points-only league never sees the word "ledger". */}
+            {league.prizeSchemeId ? (
+              <Link
+                href={`/leagues/${id}/ledger`}
+                className="inline-flex min-h-tap items-center rounded-md bg-surface-2 px-4 font-display text-[11px] font-bold uppercase tracking-label shadow-el-1"
+              >
+                Ledger
+              </Link>
+            ) : null}
             {league.selectionMode !== 'all' ? (
               <Link
                 href={`/leagues/${id}/selection`}

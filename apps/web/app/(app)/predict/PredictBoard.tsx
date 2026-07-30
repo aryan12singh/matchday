@@ -37,6 +37,18 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
     setSaveStates((current) => ({ ...current, [id]: state }));
   }, []);
 
+  /**
+   * The current fixtures, readable without going through a state updater.
+   *
+   * `update` used to do its work inside `setFixtures((current) => …)` and call `persist`
+   * from in there. A state updater must be pure: React invokes it more than once — twice
+   * under StrictMode, and again whenever a render is retried — and `persist` starts
+   * another state update from inside it, which retries the pending one, which calls
+   * `persist` again. The observed result was six saves for one tap and an optimistic value
+   * that never committed, so a pick reached the database and never appeared on screen.
+   */
+  const fixturesRef = useRef(matchweek.fixtures);
+
   const persist = useCallback(
     (fixture: PredictFixture, next: PredictFixture) => {
       setSaveState(fixture.id, { kind: 'saving' });
@@ -60,10 +72,12 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
           return;
         }
 
-        // Roll the optimistic value back to what the server still holds.
-        setFixtures((current) =>
-          current.map((f) => (f.id === fixture.id ? fixture : f)),
+        // Roll the optimistic value back to what the server still holds. The ref moves
+        // with it, or the next edit would be computed from the value that was rejected.
+        fixturesRef.current = fixturesRef.current.map((f) =>
+          f.id === fixture.id ? fixture : f,
         );
+        setFixtures(fixturesRef.current);
         setSaveState(fixture.id, {
           kind: result.status === 'locked' ? 'locked' : 'error',
           message: result.message,
@@ -75,14 +89,15 @@ export function PredictBoard({ matchweek }: { matchweek: Matchweek }) {
 
   const update = useCallback(
     (id: string, mutate: (fixture: PredictFixture) => PredictFixture) => {
-      setFixtures((current) => {
-        const previous = current.find((f) => f.id === id);
-        if (!previous) return current;
+      const previous = fixturesRef.current.find((f) => f.id === id);
+      if (!previous) return;
 
-        const next = mutate(previous);
-        persist(previous, next);
-        return current.map((f) => (f.id === id ? next : f));
-      });
+      const next = mutate(previous);
+      fixturesRef.current = fixturesRef.current.map((f) => (f.id === id ? next : f));
+
+      setFixtures(fixturesRef.current);
+      // Outside the updater, so it runs exactly once per change.
+      persist(previous, next);
     },
     [persist],
   );

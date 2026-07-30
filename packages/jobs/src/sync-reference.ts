@@ -50,7 +50,7 @@ export async function syncReference(
       if (options.skipIfUnplayed) {
         const { count } = await client
           .from('fixtures')
-          .select('id, rounds!inner ( stages!inner ( season_id ) )', {
+          .select('id, rounds!fixtures_round_id_fkey!inner ( stages!inner ( season_id ) )', {
             count: 'exact',
             head: true,
           })

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { DeleteAccount } from './DeleteAccount';
+
 import { requireUser } from '../../../lib/auth';
 import { createClient } from '../../../lib/supabase/server';
 
@@ -52,16 +54,19 @@ export default async function ProfilePage() {
           Install the app
           <span aria-hidden="true" className="text-text-3">→</span>
         </Link>
+        <Link href="/legal/terms" className="flex min-h-tap items-center justify-between text-[14px]">
+          Terms
+          <span aria-hidden="true" className="text-text-3">→</span>
+        </Link>
+        <Link href="/legal/privacy" className="flex min-h-tap items-center justify-between text-[14px]">
+          Privacy
+          <span aria-hidden="true" className="text-text-3">→</span>
+        </Link>
       </nav>
 
-      <section className="flex flex-col gap-2 border-t border-border pt-6">
+      <section className="flex flex-col gap-3 border-t border-border pt-6">
         <h2 className="label">Deleting your account</h2>
-        <p className="text-[13px] text-text-2">
-          Your profile is anonymised and your predictions stay attached to an anonymous
-          player, so your leagues&apos; history and everyone else&apos;s points stay
-          correct. Ask an organizer or email support — this is deliberately not a button,
-          because it cannot be undone.
-        </p>
+        <DeleteAccount username={profile?.username ?? user.username} />
       </section>
     </div>
   );

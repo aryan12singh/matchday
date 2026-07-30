@@ -3,6 +3,8 @@ import type { ProviderAdapter, SeasonRef } from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { settleFixtureMarkets } from './settlement';
+import { settleLeaguePrizes } from './prizes';
+import { sendDeadlineReminders } from './reminders';
 import { snapshotRanks } from './snapshots';
 import { syncFinal } from './sync-final';
 import { syncFixtures } from './sync-fixtures';
@@ -34,6 +36,10 @@ export interface TickResult {
   selectionFallbacks: number;
   fixturesSettled: number;
   snapshotsWritten: number;
+  /** Prize ledger rows written or revised on this tick. */
+  prizesSettled: number;
+  /** Deadline reminders delivered on this tick. */
+  remindersSent: number;
   /** Empty when no adapter is configured. */
   ingestion: IngestionSummary | null;
   errors: string[];
@@ -49,6 +55,7 @@ export interface IngestionSummary {
   corrected: number;
   rescheduled: number;
   standingsRows: number;
+  fixturesLinked: number;
   skippedForQuota: boolean;
 }
 
@@ -118,11 +125,40 @@ export async function runTick(client: Db, options: TickOptions = {}): Promise<Ti
     ? await step(errors, 'snapshot_ranks', () => snapshotRanks(client))
     : 0;
 
+  // Prizes follow the board. Settled only when something actually changed, and only for
+  // leagues that have a scheme — settleLeaguePrizes no-ops for the points-only default,
+  // which is most leagues. A correction re-runs this too, which is the point: a revised
+  // result moves money, and the ledger records the revision rather than editing silently.
+  const prizesSettled = settlementHappened
+    ? await step(errors, 'settle_prizes', async () => {
+        const { data: leagueSeasons } = await client
+          .from('league_seasons')
+          .select('id')
+          .not('prize_scheme_id', 'is', null);
+
+        let settled = 0;
+        for (const leagueSeason of leagueSeasons ?? []) {
+          const result = await settleLeaguePrizes(client, leagueSeason.id);
+          if (result && result.skipped == null) settled += result.written + result.revised;
+        }
+        return settled;
+      })
+    : 0;
+
+  // Reminders run every tick regardless of settlement: they are about fixtures that have
+  // NOT happened yet, and the window they watch is one minute wide.
+  const remindersSent = await step(errors, 'send_deadline_reminders', async () => {
+    const result = await sendDeadlineReminders(client, { now });
+    return result?.sent ?? 0;
+  });
+
   return {
     marketsLocked,
     selectionFallbacks,
+    remindersSent,
     fixturesSettled,
     snapshotsWritten,
+    prizesSettled,
     ingestion,
     errors,
   };
@@ -146,6 +182,7 @@ async function ingest(
     corrected: 0,
     rescheduled: 0,
     standingsRows: 0,
+    fixturesLinked: 0,
     skippedForQuota: false,
   };
 
@@ -167,7 +204,7 @@ async function ingest(
 
   const { data: nearby } = await client
     .from('fixtures')
-    .select('kickoff_at, status, result_hash, rounds!inner ( stages!inner ( season_id ) )')
+    .select('kickoff_at, status, result_hash, rounds!fixtures_round_id_fkey!inner ( stages!inner ( season_id ) )')
     .eq('rounds.stages.season_id', season.id)
     .gte('kickoff_at', horizonStart)
     .lte('kickoff_at', horizonEnd);
@@ -218,6 +255,7 @@ async function ingest(
         const result = await syncLive(client, adapter, { seasonId, seasonRef });
         summary.liveUpdated += result?.updated ?? 0;
         summary.eventsWritten += result?.eventsWritten ?? 0;
+        summary.fixturesLinked += result?.linked ?? 0;
         return 0;
       });
     }

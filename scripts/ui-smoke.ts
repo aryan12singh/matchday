@@ -76,6 +76,10 @@ async function main() {
     { path: '/leagues/new', expect: /New league/i, shot: 'leagues-new' },
     { path: '/join', expect: /Join a league/i, shot: 'join' },
     { path: '/install', expect: /home screen/i, shot: 'install' },
+    // Reachable signed out too, but covered here so a broken legal page fails the suite
+    // rather than being noticed by whoever reads them first.
+    { path: '/legal/terms', expect: /Terms/i, shot: 'legal-terms' },
+    { path: '/legal/privacy', expect: /Privacy/i, shot: 'legal-privacy' },
   ];
 
   console.log('\nRoutes');
