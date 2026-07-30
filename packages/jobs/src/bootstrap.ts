@@ -1,5 +1,5 @@
 import type { Database } from '@matchday/domain';
-import type { ProviderAdapter, SeasonRef } from '@matchday/provider';
+import type { ScheduleProvider, SeasonRef } from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { resolveOrCreate } from './entity-map';
@@ -37,7 +37,7 @@ export interface BootstrapResult {
 
 export async function bootstrapSeason(
   client: Db,
-  adapter: ProviderAdapter,
+  adapter: ScheduleProvider,
   options: BootstrapOptions,
 ): Promise<BootstrapResult | null> {
   return withAdvisoryLock(client, `bootstrap:${options.competitionCode}:${options.seasonLabel}`, () =>

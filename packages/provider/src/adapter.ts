@@ -125,6 +125,20 @@ export interface ProviderAdapter {
   listTopScorers(seasonRef: SeasonRef): Promise<RawResponse<ProviderTopScorer[]>>;
 }
 
+/**
+ * The subset a season bootstrap needs.
+ *
+ * Split out because not every source can answer everything: the Premier League's own JSON
+ * has the schedule and squads but no usable event stream, while API-Football's free tier
+ * has live events but not the schedule. Naming the smaller contract lets a partial source
+ * be used honestly, instead of implementing the full adapter and throwing from two thirds
+ * of it.
+ */
+export type ScheduleProvider = Pick<
+  ProviderAdapter,
+  'name' | 'listTeams' | 'listSquad' | 'listFixtures'
+>;
+
 /** Which competition-season to ask about, in the provider's own terms. */
 export interface SeasonRef {
   leagueProviderId: string;

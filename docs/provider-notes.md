@@ -25,9 +25,10 @@ limit than it first appears. Probed 31 July 2026:
 
 So the honest position is narrower than "the Free plan is useless for 2026/27":
 
-- **The full 38-matchweek fixture list cannot be obtained.** This is the one genuine
-  blocker, and it is the whole schedule the predict screen is built on. A paid plan is
-  required to load the season.
+- **The full 38-matchweek fixture list cannot be obtained from API-Football.** This was
+  the one genuine blocker — the whole schedule the predict screen is built on. It is now
+  solved from a different source rather than by paying: the Premier League publishes its
+  own schedule, clubs and squads as JSON. See §6.
 - **Current squads can be.** `/players/squads` takes only a team id, so real 2026/27
   squads are reachable today — enough for the squad-search first-scorer picker, given
   team ids from an accessible season (they are stable: 33 is Manchester United in both).
@@ -114,7 +115,47 @@ Asserted in `cassettes.test.ts` against 2024/25:
 - Event keys are unique within a fixture and stable across identical calls, which is what
   makes the `(fixture_id, provider_event_key)` upsert idempotent under repeated polling
 
-## 6. Open questions
+## 6. The schedule comes from the Premier League, not from API-Football
+
+`FplAdapter` (`packages/provider/src/fpl.ts`) reads two unauthenticated endpoints:
+
+```
+/api/bootstrap-static/   20 clubs, ~560 players with club and position, 38 gameweeks
+/api/fixtures/           380 fixtures with kickoff times and gameweek numbers
+```
+
+That is the entire dataset the free API-Football plan withholds, at no cost and with no
+scraping — it is the JSON API behind the PL's own fantasy game, parsed as data rather than
+lifted out of rendered HTML. A full bootstrap costs **two HTTP requests** and about 15
+seconds, and squads come free because they are already inside the cached bootstrap payload
+(API-Football would charge one request per club).
+
+Verified in `fpl.test.ts` against committed cassettes: 20 clubs each playing 38 games, 380
+unique ordered pairings, 38 gameweeks of exactly 10 fixtures, every fixture with a
+parseable kickoff. Structural rather than superficial, because a fixture list that is 372
+games long produces an app that looks fine and is quietly wrong.
+
+**It is undocumented and unversioned.** No SLA, and the shape can change without notice.
+Mitigations: responses are archived to `raw_payloads` like any other provider, the
+normalizers are pinned by cassettes, and it implements the narrow `ScheduleProvider`
+interface rather than the full adapter — it has no usable event stream, and serving
+first-goalscorer from it is exactly the mistake that interface prevents.
+
+`fixture.finished` also lags the final whistle (it flips when fantasy points are
+confirmed), so it never drives settlement. Settlement runs from API-Football's status.
+
+### The gap this leaves
+
+The bootstrap now writes `provider_entity_map` rows under the provider `fpl`. The live and
+finalisation jobs resolve fixtures under `api-football`, and those rows do not exist — so
+against an FPL-bootstrapped season the live sync currently matches nothing and reports it
+as `unmatched` rather than failing.
+
+Closing it needs a reconciliation step that matches the two providers' fixtures by kickoff
+and club, which cannot use API-Football's season-scoped fixture list on the free plan and
+so has to work from the live list at match time. Club names differ between the sources
+("Man Utd" vs "Manchester United"), so it needs an alias table and its own tests.
+## 7. Open questions
 
 - **Corrections have not been observed.** The `result_hash` re-check in `sync-final.ts` is
   built for provider revisions after full time, but no real correction pair has been
@@ -126,3 +167,4 @@ Asserted in `cassettes.test.ts` against 2024/25:
   friendlies and a Conference League tie. The shapes are competition-independent, but the
   *volume* — ten simultaneous fixtures, each polled — has only been modelled, in
   `windows.test.ts`, never run.
+

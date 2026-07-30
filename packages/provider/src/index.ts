@@ -12,6 +12,7 @@ export * from './adapter';
 export * from './normalizers';
 export * from './requests';
 export * from './api-football';
+export * from './fpl';
 export * from './replay';
 
 export const PROVIDER_PACKAGE = '@matchday/provider' as const;

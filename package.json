@@ -26,7 +26,8 @@
     "dev:setup": "tsx scripts/dev-setup.ts",
     "cassettes:capture": "tsx scripts/capture-cassettes.ts",
     "ingest:drill": "tsx scripts/ingestion-drill.ts",
-    "cassettes:live": "tsx scripts/capture-live.ts"
+    "cassettes:live": "tsx scripts/capture-live.ts",
+    "season:bootstrap": "tsx scripts/bootstrap-season.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",

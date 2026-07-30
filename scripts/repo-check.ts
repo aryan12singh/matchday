@@ -146,6 +146,8 @@ const PROVIDER_IMPORT_ALLOWED = [
   // future script cannot reach the provider by being in the same folder.
   'scripts/capture-cassettes.ts',
   'scripts/ingestion-drill.ts',
+  'scripts/bootstrap-season.ts',
+  'scripts/capture-live.ts',
 ];
 
 for (const file of sources) {
