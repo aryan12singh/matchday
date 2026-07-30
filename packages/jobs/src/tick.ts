@@ -1,5 +1,5 @@
 import type { Database } from '@matchday/domain';
-import type { ProviderAdapter, SeasonRef } from '@matchday/provider';
+import type { ProviderAdapter, ScheduleProvider, SeasonRef } from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { settleFixtureMarkets } from './settlement';
@@ -60,7 +60,14 @@ export interface IngestionSummary {
 }
 
 export interface TickOptions {
-  adapter?: ProviderAdapter;
+  /** Live scores and events. Absent when no provider key is configured. */
+  adapter?: ProviderAdapter | null;
+  /**
+   * The fixture schedule. A separate source on purpose: it comes from the Premier League's
+   * own JSON, needs no key, and is the only thing that can answer season-scoped questions
+   * on a free API-Football plan.
+   */
+  scheduleAdapter?: ScheduleProvider | null;
   seasonRef?: SeasonRef;
   /** Stand down when fewer than this many provider requests remain today. */
   quotaFloor?: number;
@@ -90,8 +97,8 @@ export async function runTick(client: Db, options: TickOptions = {}): Promise<Ti
   // updates at full time and one that updates a minute later, every time.
   let ingestion: IngestionSummary | null = null;
 
-  if (options.adapter && options.seasonRef) {
-    ingestion = await ingest(client, options.adapter, options.seasonRef, now, options, errors);
+  if ((options.adapter || options.scheduleAdapter) && options.seasonRef) {
+    ingestion = await ingest(client, options.seasonRef, now, options, errors);
   }
 
   // Finished fixtures whose markets have not settled. Settlement takes a per-fixture
@@ -166,12 +173,13 @@ export async function runTick(client: Db, options: TickOptions = {}): Promise<Ti
 
 async function ingest(
   client: Db,
-  adapter: ProviderAdapter,
   seasonRef: SeasonRef,
   now: number,
   options: TickOptions,
   errors: string[],
 ): Promise<IngestionSummary> {
+  const adapter = options.adapter ?? null;
+  const scheduleAdapter = options.scheduleAdapter ?? null;
   const summary: IngestionSummary = {
     actions: [],
     reason: 'not evaluated',
@@ -231,7 +239,7 @@ async function ingest(
   // plan's 100/day a single matchday would otherwise exhaust the budget mid-afternoon and
   // leave the evening kickoff with no data at all — better to degrade deliberately.
   const floor = options.quotaFloor ?? 0;
-  if (floor > 0) {
+  if (floor > 0 && adapter) {
     const { data: used } = await client
       .from('provider_quota_ledger')
       .select('calls')
@@ -250,7 +258,10 @@ async function ingest(
   const seasonId = season.id;
 
   for (const action of plan.actions) {
-    if (action === 'live') {
+    // Live, finalisation and reference all need the results provider; the schedule does
+    // not. Without a key the tick still keeps fixtures and kickoffs current, which is what
+    // the lock sweep depends on.
+    if (action === 'live' && adapter) {
       await step(errors, 'sync_live', async () => {
         const result = await syncLive(client, adapter, { seasonId, seasonRef });
         summary.liveUpdated += result?.updated ?? 0;
@@ -260,7 +271,7 @@ async function ingest(
       });
     }
 
-    if (action === 'final') {
+    if (action === 'final' && adapter) {
       await step(errors, 'sync_final', async () => {
         const result = await syncFinal(client, adapter, { mode: 'finalise' });
         summary.finalised += result?.finalised ?? 0;
@@ -268,7 +279,7 @@ async function ingest(
       });
     }
 
-    if (action === 'corrections') {
+    if (action === 'corrections' && adapter) {
       await step(errors, 'sync_corrections', async () => {
         const result = await syncFinal(client, adapter, { mode: 'corrections' });
         summary.corrected += result?.corrected ?? 0;
@@ -276,15 +287,22 @@ async function ingest(
       });
     }
 
-    if (action === 'fixtures') {
+    if (action === 'fixtures' && scheduleAdapter) {
       await step(errors, 'sync_fixtures', async () => {
-        const result = await syncFixtures(client, adapter, { seasonId, seasonRef, horizonDays: 30 });
+        // The schedule provider, not the results one: API-Football's free plan refuses
+        // season-scoped calls, and this is the call that keeps prediction locks aligned
+        // with kickoffs.
+        const result = await syncFixtures(client, scheduleAdapter, {
+          seasonId,
+          seasonRef,
+          horizonDays: 30,
+        });
         summary.rescheduled += result?.rescheduled ?? 0;
         return 0;
       });
     }
 
-    if (action === 'reference') {
+    if (action === 'reference' && adapter) {
       await step(errors, 'sync_reference', async () => {
         const result = await syncReference(client, adapter, {
           seasonId,

@@ -44,10 +44,9 @@ export async function POST(request: NextRequest) {
   const started = Date.now();
   const client = createServiceClient();
 
-  // Ingestion only engages when a provider key is configured; without one the tick still
-  // locks, settles and snapshots exactly as it did before ingestion existed.
-  const provider = createProviderConfig(client);
-  const result = await runTick(client, provider ?? {});
+  // Schedule sync needs no key and always runs; live scores and events engage only when
+  // an API-Football key is configured.
+  const result = await runTick(client, createProviderConfig(client));
 
   // 200 even with step errors: pg_cron has no useful reaction to a 500, and a
   // non-2xx would obscure the steps that did succeed. The errors are in the body and

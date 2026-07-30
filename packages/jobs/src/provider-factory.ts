@@ -1,5 +1,11 @@
 import type { Database } from '@matchday/domain';
-import { ApiFootballAdapter, type ProviderAdapter, type SeasonRef } from '@matchday/provider';
+import {
+  ApiFootballAdapter,
+  FplAdapter,
+  type ProviderAdapter,
+  type ScheduleProvider,
+  type SeasonRef,
+} from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 type Db = SupabaseClient<Database>;
@@ -18,14 +24,20 @@ type Db = SupabaseClient<Database>;
  */
 
 export interface ProviderConfig {
-  adapter: ProviderAdapter;
+  /** Live scores and events. Null when no API-Football key is configured. */
+  adapter: ProviderAdapter | null;
+  /**
+   * The fixture schedule, which comes from the Premier League's own JSON rather than
+   * API-Football — whose free plan refuses season-scoped calls outright. It needs no key,
+   * so schedule sync works in every environment including this one.
+   */
+  scheduleAdapter: ScheduleProvider;
   seasonRef: SeasonRef;
   quotaFloor: number;
 }
 
-export function createProviderConfig(client: Db, env = process.env): ProviderConfig | null {
+export function createProviderConfig(client: Db, env = process.env): ProviderConfig {
   const apiKey = env.API_FOOTBALL_KEY;
-  if (!apiKey) return null;
 
   const leagueProviderId = env.API_FOOTBALL_LEAGUE_ID ?? '39';
   const seasonYear = Number(env.API_FOOTBALL_SEASON_YEAR ?? new Date().getUTCFullYear());
@@ -35,7 +47,8 @@ export function createProviderConfig(client: Db, env = process.env): ProviderCon
   // so the automatic half should not be able to consume every last request.
   const quotaFloor = Number(env.API_FOOTBALL_DAILY_BUDGET ?? 0);
 
-  const adapter = new ApiFootballAdapter({
+  const adapter = apiKey
+    ? new ApiFootballAdapter({
     apiKey,
     baseUrl: env.API_FOOTBALL_BASE_URL,
     onRequest: async () => {
@@ -49,10 +62,12 @@ export function createProviderConfig(client: Db, env = process.env): ProviderCon
       // a blocked one is missing data. The gate errs safe on the next tick either way.
       if (error) console.warn('[quota] failed to record provider call:', error.message);
     },
-  });
+      })
+    : null;
 
   return {
     adapter,
+    scheduleAdapter: new FplAdapter(),
     seasonRef: { leagueProviderId, seasonYear },
     quotaFloor,
   };

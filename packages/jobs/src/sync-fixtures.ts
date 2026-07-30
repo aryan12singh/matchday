@@ -1,5 +1,5 @@
 import type { Database } from '@matchday/domain';
-import type { ProviderAdapter, ProviderFixture, SeasonRef } from '@matchday/provider';
+import type { ProviderFixture, ScheduleProvider, SeasonRef } from '@matchday/provider';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { archiveRawPayload } from './bootstrap';
@@ -45,7 +45,7 @@ export interface SyncFixturesResult {
 
 export async function syncFixtures(
   client: Db,
-  adapter: ProviderAdapter,
+  adapter: ScheduleProvider,
   options: SyncFixturesOptions,
 ): Promise<SyncFixturesResult | null> {
   return withAdvisoryLock(client, `sync:fixtures:${options.seasonId}`, () =>

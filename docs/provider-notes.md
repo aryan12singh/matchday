@@ -144,6 +144,21 @@ first-goalscorer from it is exactly the mistake that interface prevents.
 `fixture.finished` also lags the final whistle (it flips when fantasy points are
 confirmed), so it never drives settlement. Settlement runs from API-Football's status.
 
+### Which job asks which source
+
+The tick uses both, and each job asks the source that can actually answer it:
+
+| Job | Source | Needs a key |
+|---|---|---|
+| `sync_fixtures` (schedule, kickoffs, locks) | Premier League JSON | no |
+| `sync_live`, `sync_fixture_final`, corrections | API-Football | yes |
+| `sync_reference` (table, top scorers) | API-Football | yes |
+
+Pointing the schedule sync at API-Football would fail hourly on the free plan, and it is
+the job prediction locks depend on — `ensure_fixture_markets` re-runs from it whenever a
+kickoff moves. So with no key at all the app still keeps its fixtures and deadlines
+correct, and only live scoring is dormant.
+
 ### The gap this leaves
 
 The bootstrap now writes `provider_entity_map` rows under the provider `fpl`. The live and
