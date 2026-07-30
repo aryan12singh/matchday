@@ -13,6 +13,12 @@ export * from './entity-map';
 export * from './settlement';
 export * from './bootstrap';
 export * from './snapshots';
+export * from './sync-fixtures';
+export * from './sync-live';
+export * from './sync-final';
+export * from './sync-reference';
+export * from './windows';
+export * from './provider-factory';
 export * from './tick';
 
 export const JOBS_PACKAGE = '@matchday/jobs' as const;

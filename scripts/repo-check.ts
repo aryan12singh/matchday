@@ -141,6 +141,11 @@ const PROVIDER_IMPORT_ALLOWED = [
   'apps/web/app/api/jobs/',
   'apps/web/app/api/ops/',
   'tests/',
+  // Cassette capture is the one dev tool whose whole job is to talk to the provider and
+  // write the payloads down. Listed by exact path rather than opening up scripts/, so a
+  // future script cannot reach the provider by being in the same folder.
+  'scripts/capture-cassettes.ts',
+  'scripts/ingestion-drill.ts',
 ];
 
 for (const file of sources) {

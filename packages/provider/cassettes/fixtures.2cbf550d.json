@@ -1,0 +1,21 @@
+{
+  "endpoint": "/fixtures",
+  "paramsHash": "2cbf550d",
+  "httpStatus": 200,
+  "raw": {
+    "get": "fixtures",
+    "parameters": {
+      "league": "39",
+      "season": "2024",
+      "live": "all"
+    },
+    "errors": [],
+    "results": 0,
+    "paging": {
+      "current": 1,
+      "total": 1
+    },
+    "response": []
+  },
+  "recordedAt": "2026-07-30T15:16:12.974Z"
+}
