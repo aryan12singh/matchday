@@ -1,0 +1,63 @@
+{
+  "endpoint": "/fixtures/events",
+  "httpStatus": 200,
+  "raw": {
+    "get": "fixtures/events",
+    "parameters": {
+      "fixture": "1583495"
+    },
+    "errors": [],
+    "results": 2,
+    "paging": {
+      "current": 1,
+      "total": 1
+    },
+    "response": [
+      {
+        "time": {
+          "elapsed": 8,
+          "extra": null
+        },
+        "team": {
+          "id": 523,
+          "name": "Parma",
+          "logo": "https://media.api-sports.io/football/teams/523.png"
+        },
+        "player": {
+          "id": 386393,
+          "name": "R. Kouda"
+        },
+        "assist": {
+          "id": null,
+          "name": null
+        },
+        "type": "Goal",
+        "detail": "Normal Goal",
+        "comments": null
+      },
+      {
+        "time": {
+          "elapsed": 40,
+          "extra": null
+        },
+        "team": {
+          "id": 876,
+          "name": "Arezzo",
+          "logo": "https://media.api-sports.io/football/teams/876.png"
+        },
+        "player": {
+          "id": 396767,
+          "name": "M. Sala"
+        },
+        "assist": {
+          "id": null,
+          "name": null
+        },
+        "type": "Goal",
+        "detail": "Normal Goal",
+        "comments": null
+      }
+    ]
+  },
+  "recordedAt": "2026-07-30T16:03:13.134Z"
+}

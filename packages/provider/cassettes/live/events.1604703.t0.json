@@ -1,0 +1,63 @@
+{
+  "endpoint": "/fixtures/events",
+  "httpStatus": 200,
+  "raw": {
+    "get": "fixtures/events",
+    "parameters": {
+      "fixture": "1604703"
+    },
+    "errors": [],
+    "results": 2,
+    "paging": {
+      "current": 1,
+      "total": 1
+    },
+    "response": [
+      {
+        "time": {
+          "elapsed": 9,
+          "extra": null
+        },
+        "team": {
+          "id": 1693,
+          "name": "Mantova",
+          "logo": "https://media.api-sports.io/football/teams/1693.png"
+        },
+        "player": {
+          "id": null,
+          "name": null
+        },
+        "assist": {
+          "id": null,
+          "name": null
+        },
+        "type": "Goal",
+        "detail": "Normal Goal",
+        "comments": null
+      },
+      {
+        "time": {
+          "elapsed": 21,
+          "extra": null
+        },
+        "team": {
+          "id": 1693,
+          "name": "Mantova",
+          "logo": "https://media.api-sports.io/football/teams/1693.png"
+        },
+        "player": {
+          "id": null,
+          "name": null
+        },
+        "assist": {
+          "id": null,
+          "name": null
+        },
+        "type": "Goal",
+        "detail": "Normal Goal",
+        "comments": null
+      }
+    ]
+  },
+  "recordedAt": "2026-07-30T16:03:05.806Z"
+}

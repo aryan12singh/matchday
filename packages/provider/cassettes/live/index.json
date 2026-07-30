@@ -1,0 +1,22 @@
+{
+  "note": "Live payloads captured across two samples. Competition-independent shapes.",
+  "capturedAt": "2026-07-30T16:05:19.463Z",
+  "gapSeconds": 90,
+  "fixtures": [
+    {
+      "id": 1604703,
+      "league": "Friendlies Clubs",
+      "label": "Mantova v Alcione"
+    },
+    {
+      "id": 1583495,
+      "league": "Friendlies Clubs",
+      "label": "Parma v Arezzo"
+    },
+    {
+      "id": 1556540,
+      "league": "UEFA Europa Conference League",
+      "label": "FK Tobol Kostanay v Panevėžys"
+    }
+  ]
+}
